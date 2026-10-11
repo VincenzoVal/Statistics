@@ -7,3 +7,9 @@ body {
 main {
   flex: 1;
 }
+
+/* Solo la scritta "Homework": nessun hover, nessuna selezione */
+.brand-statico {
+  pointer-events: none;
+  user-select: none;
+}
