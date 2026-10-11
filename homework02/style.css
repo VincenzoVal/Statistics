@@ -1,0 +1,70 @@
+/* Homework 2: page-specific styles */
+
+/* Pipeline diagram */
+.pipeline { display: flex; flex-direction: column; align-items: center; gap: .25rem; max-width: 640px; margin: 0 auto; }
+.pnode {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  padding: .6rem 1rem;
+  border: 2px solid #2c3e50;
+  border-radius: .5rem;
+  background: #fff;
+}
+.pnode small { display: block; font-weight: 400; color: #6c757d; }
+.pfinal { background: #2c3e50; color: #fff; }
+.pfinal small { color: #d5dbe0; }
+.parrow { text-align: center; color: #18bc9c; line-height: 1.25; padding: .1rem 0; }
+.parrow::before { content: "\2193"; display: block; font-size: 1.4rem; line-height: 1; }
+.parrow b { color: #2c3e50; }
+.parrow span { display: block; color: #6c757d; font-size: .85rem; }
+
+/* Hex strings and technical output */
+code.hex { word-break: break-all; font-size: .85rem; color: #212529; background: transparent; padding: 0; }
+.muted-hex { color: #adb5bd; }
+.cs { background: #fcf3cf; font-weight: 700; }
+.kept { font-weight: 700; color: #18bc9c; }
+pre.align {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+  padding: .75rem;
+  font-size: .85rem;
+  overflow-x: auto;
+  margin-bottom: .5rem;
+}
+.up { font-weight: 700; color: #e74c3c; }
+.final-address {
+  font-family: var(--bs-font-monospace);
+  font-size: 1.3rem;
+  word-break: break-all;
+  font-weight: 600;
+}
+table.compact td, table.compact th { font-size: .85rem; }
+
+/* Timeline */
+.timeline { list-style: none; padding-left: 0; border-left: 3px solid #dee2e6; margin-left: .5rem; }
+.timeline li { position: relative; padding: 0 0 1rem 1.25rem; display: flex; gap: 1rem; color: #6c757d; }
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -.55rem;
+  top: .3rem;
+  width: .8rem;
+  height: .8rem;
+  border-radius: 50%;
+  background: #adb5bd;
+}
+.timeline li.main { color: #212529; }
+.timeline li.main::before { background: #18bc9c; }
+.timeline .year { min-width: 3.2rem; font-weight: 700; }
+
+/* Charts */
+canvas.chart {
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+}
+.select-auto { width: auto; }
