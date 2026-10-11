@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +13,7 @@
 
   <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container">
-      <span class="navbar-brand brand-statico">Statistics 2026/2027</span>
+      <span class="navbar-brand brand-statico">Homework</span>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -26,11 +26,216 @@
   </nav>
 
   <main class="container py-4">
-    <h1 class="mb-4">Homework 1</h1>
 
-    <!-- ===== INIZIO CONTENUTO: scrivi qui ===== -->
+    <h1 class="mb-1">HMWK 1 &mdash; Example App: Public-Key Cryptography</h1>
+    <p class="lead text-muted mb-4">PRIVATE KEY &rarr; PUBLIC KEY in Ethereum, shown on a toy elliptic curve</p>
 
-    <!-- ===== FINE CONTENUTO ===== -->
+    <!-- ===== BACKGROUND ===== -->
+    <section class="mb-5">
+      <h2 class="h4">Background</h2>
+      <p>
+        Elliptic-curve scalar multiplication can be viewed as a cryptographic one-way function.
+        It is deterministic and easy to compute in the forward direction:
+        private key <em>k</em> &rarr; public key <em>Q = kG</em>, where <em>G</em> is a fixed base point of the curve.
+        Recovering <em>k</em> from <em>Q</em> is computationally hard. This is the
+        Elliptic Curve Discrete Logarithm Problem (ECDLP).
+      </p>
+      <p>
+        Ethereum uses the curve <em>secp256k1</em>: <em>y&sup2; = x&sup3; + 7</em> over a prime field with
+        <em>p = 2<sup>256</sup> &minus; 2<sup>32</sup> &minus; 977</em>. An Ethereum address is then derived from the public key
+        by hashing it with Keccak-256 and keeping the last 20 bytes.
+      </p>
+      <p class="mb-0">
+        This page uses a <strong>toy curve</strong>, <em>y&sup2; = x&sup3; + 7 (mod 17)</em>, so that every step can be
+        followed by hand. The goal is to understand the basic idea of scalar multiplication,
+        <strong>not</strong> to implement a real cryptographic system.
+      </p>
+    </section>
+
+    <!-- ===== 1. SETUP ===== -->
+    <section class="mb-5">
+      <h2 class="h4">1. Curve, base point and private key</h2>
+      <div class="card">
+        <div class="card-body">
+          <p class="mb-3">
+            Curve: <span class="font-monospace">y&sup2; = x&sup3; + 7 (mod 17)</span>
+            &nbsp;&middot;&nbsp; default base point: <span class="font-monospace">G = (1, 5)</span>
+            &nbsp;&middot;&nbsp; default private key: <span class="font-monospace">k = 6</span>
+          </p>
+          <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+              <label for="baseSelect" class="form-label">Base point G (any valid point of the curve)</label>
+              <select id="baseSelect" class="form-select"></select>
+            </div>
+            <div class="col-md-4">
+              <label for="kInput" class="form-label">Private key k (integer, 1 to 100000)</label>
+              <input id="kInput" type="number" class="form-control" value="6" min="1" max="100000" step="1">
+            </div>
+            <div class="col-md-3">
+              <button id="computeBtn" type="button" class="btn btn-primary w-100">Compute public key</button>
+            </div>
+          </div>
+          <div id="kError" class="text-danger small mt-2 d-none"></div>
+          <p id="baseInfo" class="small text-muted mt-3 mb-0"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RESULT ===== -->
+    <section class="mb-5">
+      <h2 class="h4">Result</h2>
+      <div id="result"></div>
+      <div class="mt-3">
+        <button id="bruteBtn" type="button" class="btn btn-outline-secondary btn-sm">Try to recover k from Q by brute force</button>
+        <span id="bruteOut" class="small ms-2"></span>
+      </div>
+    </section>
+
+    <!-- ===== 2. REPEATED ADDITION ===== -->
+    <section class="mb-5">
+      <h2 class="h4">2. Repeated addition: G, 2G, 3G, ..., kG</h2>
+      <p>
+        Starting from G, we add G again and again using the elliptic-curve addition rule
+        (chord-and-tangent formulas, computed modulo 17). When the two points are equal the formula for
+        <em>point doubling</em> is used. If a sum has the same x but opposite y, the result is the
+        <em>point at infinity</em> O, the neutral element of the group.
+      </p>
+      <div id="seqTable"></div>
+    </section>
+
+    <!-- ===== 3. DOUBLE AND ADD ===== -->
+    <section class="mb-5">
+      <h2 class="h4">3. A faster method: double-and-add</h2>
+      <p>
+        Repeated addition needs k &minus; 1 additions, which is hopeless for a 256-bit k.
+        Double-and-add reads the binary digits of k from the most significant bit to the least significant one:
+        for every bit the running point R is doubled, and if the bit is 1, G is added as well.
+        This needs only about 2 &middot; log<sub>2</sub>(k) operations.
+      </p>
+      <p id="dblBits" class="font-monospace"></p>
+      <div id="dblTable"></div>
+    </section>
+
+    <!-- ===== 4. VISUALISATION ===== -->
+    <section class="mb-5">
+      <h2 class="h4">4. Slowed-down visual representation</h2>
+      <p>
+        The grid shows all the points of the curve over the integers 0&ndash;16. Press <strong>Play</strong> to watch the
+        algorithm move from point to point, or use <strong>Step</strong> to advance one operation at a time.
+        The panel on the right explains the arithmetic of the current step.
+      </p>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+            <select id="vizMode" class="form-select form-select-sm viz-mode">
+              <option value="repeated">Repeated addition</option>
+              <option value="double">Double-and-add</option>
+            </select>
+            <button id="vizPlay" type="button" class="btn btn-primary btn-sm">Play</button>
+            <button id="vizStep" type="button" class="btn btn-outline-primary btn-sm">Step</button>
+            <button id="vizReset" type="button" class="btn btn-outline-secondary btn-sm">Reset</button>
+          </div>
+          <div class="mb-3">
+            <label for="vizSpeed" class="form-label small mb-0">Delay per step: <span id="vizSpeedLabel">1000</span> ms</label>
+            <input id="vizSpeed" type="range" class="form-range" min="200" max="2500" step="100" value="1000">
+          </div>
+          <canvas id="vizCanvas" width="560" height="560"></canvas>
+          <div class="legend small mt-2">
+            <span><i class="dot dot-curve"></i> point of the curve</span>
+            <span><i class="dot dot-g"></i> base point G</span>
+            <span><i class="dot dot-visited"></i> visited</span>
+            <span><i class="dot dot-current"></i> current point R</span>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card h-100">
+            <div class="card-header">What is happening</div>
+            <div class="card-body">
+              <div id="vizLog"></div>
+              <div id="vizNote" class="small text-muted mt-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. STATISTICS ===== -->
+    <section class="mb-5">
+      <h2 class="h4">5. Statistical exploration</h2>
+      <p>
+        We now repeat the experiment for many private keys, k = 1, 2, ..., K, using the base point selected above,
+        and look at simple statistical properties of the resulting public keys.
+        Keep in mind that the group of this toy curve is tiny, so all the numbers below are strongly affected by its size.
+      </p>
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+              <label for="statK" class="form-label">Number of private keys K (2 to 5000)</label>
+              <input id="statK" type="number" class="form-control" value="200" min="2" max="5000" step="1">
+            </div>
+            <div class="col-md-3">
+              <button id="statBtn" type="button" class="btn btn-primary w-100">Run analysis</button>
+            </div>
+          </div>
+          <div id="statError" class="text-danger small mt-2 d-none"></div>
+          <p id="statSummary" class="mt-3 mb-0"></p>
+        </div>
+      </div>
+
+      <h3 class="h5">5.1 Distribution of the x and y coordinates</h3>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6"><canvas id="histX" width="420" height="230" class="hist"></canvas></div>
+        <div class="col-md-6"><canvas id="histY" width="420" height="230" class="hist"></canvas></div>
+      </div>
+
+      <h3 class="h5">5.2 Frequency of individual values</h3>
+      <div id="freqTable" class="mb-4"></div>
+
+      <h3 class="h5">5.3 Distribution of bits</h3>
+      <p class="small text-muted">Each coordinate is written with 5 bits (values 0 to 16). The table shows the fraction of 1s in each bit position.</p>
+      <div id="bitTable" class="mb-4"></div>
+
+      <h3 class="h5">5.4 Correlations</h3>
+      <div id="corrOut" class="mb-4"></div>
+
+      <h3 class="h5">5.5 Avalanche-like behaviour</h3>
+      <p class="small text-muted">
+        For every k we flip one bit of k and count how many of the 10 output bits (x and y) change.
+        A good hash function changes about half of the output bits.
+      </p>
+      <div id="avalOut" class="mb-2"></div>
+      <div id="avalTable" class="mb-4"></div>
+
+      <h3 class="h5">5.6 Algebraic structure</h3>
+      <div id="linearOut" class="mb-4"></div>
+
+      <h3 class="h5">5.7 Discussion</h3>
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Properties that matter for a one-way function such as k &rarr; kG</strong></p>
+          <ul>
+            <li><strong>Determinism and easy forward computation:</strong> the same k always gives the same Q, and double-and-add computes it quickly.</li>
+            <li><strong>Hardness of inversion (ECDLP):</strong> given Q and G it must be infeasible to find k. In this toy example the brute-force button needs at most n attempts, where n is the order of G; for secp256k1 n is about 2<sup>256</sup>.</li>
+            <li><strong>Roughly uniform output for uniform input:</strong> if k is chosen uniformly, Q is spread uniformly over the group generated by G. The frequency table shows this: the counts differ by at most one. Uniformity is necessary but it is not enough for security.</li>
+          </ul>
+          <p><strong>Properties specific to cryptographic hash functions</strong></p>
+          <ul>
+            <li><strong>Avalanche effect:</strong> flipping one input bit should change about half of the output bits unpredictably. Scalar multiplication does not aim for this.</li>
+            <li><strong>No algebraic structure:</strong> a hash should have no usable relation between outputs. Here (a + b)G = aG + bG and (k + 1)G = kG + G always hold, so Q + G is the public key of k + 1. This homomorphic structure is exactly what makes signatures and key exchange possible, and exactly what a hash must not have.</li>
+            <li><strong>Arbitrary-length input, fixed-size output, collision resistance:</strong> a hash compresses any message into a short digest, so collisions exist and must be hard to find. For k between 1 and n &minus; 1 the map k &rarr; kG is injective: collisions appear only when k wraps around modulo n, as the K &gt; n experiment shows.</li>
+            <li><strong>Statistical independence of input and output:</strong> a hash should show no correlation between input and output. Small correlations in the toy experiment come from the tiny group and from the fixed cyclic order of the multiples, not from a design goal.</li>
+          </ul>
+          <p class="mb-0">
+            In short: determinism, one-wayness and (for random k) uniformity are meaningful for the elliptic-curve one-way function,
+            whereas avalanche, absence of algebraic relations and collision resistance over arbitrary inputs are properties
+            specifically associated with cryptographic hash functions. This is also why Ethereum applies a hash (Keccak-256)
+            to the public key to obtain an address.
+          </p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="bg-light border-top py-3 mt-auto">
