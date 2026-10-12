@@ -174,7 +174,7 @@
         </div></div></div>
         <div class="col-lg-6"><div class="card h-100"><div class="card-body">
           <h3 class="h6">Keccak-256 &mdash; the hash function</h3>
-          <p class="mb-0 small">Compresses the 64-byte public key into a 32-byte digest. Ethereum keeps the last 20 bytes as the address. This gives a short fixed-size identifier, and the public key stays out of sight until the account signs its first transaction.</p>
+          <p class="mb-0 small">Compresses the 64-byte public key into a 32-byte digest. Ethereum keeps the last 20 bytes as the address. This gives a short fixed-size identifier, and because the address is only a truncated hash, the public key cannot be recovered from it.</p>
         </div></div></div>
         <div class="col-lg-6"><div class="card h-100"><div class="card-body">
           <h3 class="h6">EIP-55 &mdash; mixed-case checksum</h3>
@@ -216,7 +216,7 @@
       <ul class="timeline">
         <li class="main"><span class="year">1977</span><div><strong>RSA</strong> introduces practical public-key cryptography, based on the difficulty of factoring.</div></li>
         <li><span class="year">2000</span><div>The secp256k1 curve is specified in the SEC 2 standard.</div></li>
-        <li class="main"><span class="year">2001</span><div><strong>SHA-2</strong> is standardised (FIPS 180-2), including SHA-256 and <strong>SHA-512</strong>. Both are still used inside BIP-39 and BIP-32.</div></li>
+        <li class="main"><span class="year">2001</span><div><strong>SHA-2</strong> is first published (draft FIPS 180-2, open for public comment in 2001 and formally approved in August 2002), including SHA-256 and <strong>SHA-512</strong>. Both are still used inside BIP-39 and BIP-32.</div></li>
         <li><span class="year">2009</span><div>Bitcoin starts, using secp256k1 and SHA-256.</div></li>
         <li class="main"><span class="year">2012</span><div><strong>BIP-32</strong> defines hierarchical deterministic wallets. In the same year NIST selects Keccak as the winner of the SHA-3 competition.</div></li>
         <li class="main"><span class="year">2013</span><div><strong>BIP-39</strong> defines mnemonic codes for deterministic wallets.</div></li>
@@ -238,7 +238,7 @@
           <thead><tr><th></th><th>SHA-2 (SHA-256, SHA-512)</th><th>Keccak / SHA-3</th></tr></thead>
           <tbody>
             <tr><td>Design</td><td>Merkle&ndash;Damgård with a compression function</td><td>Sponge construction around the Keccak-f[1600] permutation</td></tr>
-            <tr><td>Standard</td><td>FIPS 180-2, 2001</td><td>FIPS 202, 2015</td></tr>
+            <tr><td>Standard</td><td>First published in 2001 (draft FIPS 180-2), approved in 2002; current edition FIPS 180-4</td><td>FIPS 202, 2015</td></tr>
             <tr><td>Length-extension attack</td><td>Possible on plain SHA-256 and SHA-512</td><td>Not possible</td></tr>
             <tr><td>Role in this pipeline</td><td>SHA-256 for the BIP-39 checksum; SHA-512 inside PBKDF2 (BIP-39 seed) and HMAC (BIP-32)</td><td>Keccak-256 for the address and for the EIP-55 checksum</td></tr>
           </tbody>
