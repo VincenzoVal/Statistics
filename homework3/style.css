@@ -1,1 +1,29 @@
+/* Homework 3: page-specific styles */
 
+code.hex { word-break: break-all; font-size: .8rem; color: #212529; background: transparent; padding: 0; }
+table.compact td, table.compact th { font-size: .85rem; vertical-align: middle; }
+.pt { font-family: var(--bs-font-monospace); }
+.best { background: #d5f5e3 !important; font-weight: 600; }
+.badge-m { font-size: .7rem; vertical-align: middle; }
+
+pre.out {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+  padding: .6rem .8rem;
+  font-size: .9rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: .5rem;
+}
+
+canvas.chart {
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+}
+
+.mapping { font-family: var(--bs-font-monospace); font-size: .85rem; overflow-x: auto; white-space: pre; }
+.select-auto { width: auto; }
