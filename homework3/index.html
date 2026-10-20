@@ -52,7 +52,7 @@
       </ol>
       <p class="mb-0 small text-muted">
         Note on the curve: in Homework 1 the curve y&sup2; = x&sup3; + 7 was taken modulo 17 so that every point could be listed.
-        Here, following the assignment, we use the real secp256k1 parameters (a 256-bit prime field) and make the
+        Here I use the real secp256k1 parameters (a 256-bit prime field) and make the
         <em>private key</em> small instead. The first choice makes the whole group tiny; the second keeps the group huge and only
         weakens the secret.
       </p>
@@ -204,7 +204,7 @@
 
       <h3 class="h5">D.1 The corpus and the language model</h3>
       <p class="small text-muted">
-        The box contains a built-in English corpus written for this page. You can replace it with any larger text (a book, for example): the first 70 %
+        You can replace the corpus with any larger text (a book, for example): the first 70 %
         is used to <strong>train</strong> the model and the last 30 % is kept aside as <strong>test text</strong>, so the attack is never tested on the text it learned from.
       </p>
       <textarea id="corpus" class="form-control font-monospace small mb-2" rows="6" spellcheck="false"></textarea>
@@ -356,10 +356,6 @@
     <!-- ===== REFERENCES ===== -->
     <section class="mb-5">
       <h2 class="h4">References</h2>
-      <p class="small text-muted">
-        The tasks, the Caesar cipher and the use of the secp256k1 curve come from the assignment, and the corpus was written for this page.
-        All numbers, tables and charts are computed by the code running in the browser, and the discussion is the author's own analysis based on the sources below.
-      </p>
 
       <h3 class="h6 mt-3">Elliptic curves and ElGamal encryption</h3>
       <ul class="small">
