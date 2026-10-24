@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Homework 4</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/custom.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container">
+      <span class="navbar-brand brand-statico">Homework</span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="../">Home</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+
+    <h1 class="mb-1">HMWK 4 &mdash; Many Systems, Many Attackers: Large Numbers and Normal Fluctuations of the Penetration Score</h1>
+    <p class="lead text-muted mb-4">Law of Large Numbers and Central Limit Theorem by simulation</p>
+
+    <noscript><div class="alert alert-danger">This page needs JavaScript to run the simulations.</div></noscript>
+    <div id="jsError" class="alert alert-danger d-none"></div>
+
+    <!-- ===== 1. MODEL ===== -->
+    <section class="mb-5">
+      <h2 class="h4">1. The model</h2>
+      <p>
+        There are <strong>n systems</strong> and <strong>m attackers</strong>. Every attacker goes through the systems one after the other.
+        When attacker j attacks system i, the outcome is a <em>penetration score</em> X<sub>i</sub><sup>(j)</sup>.
+        All scores are independent and identically distributed (i.i.d.), with mean &mu; and variance &sigma;&sup2;.
+        The path of one attacker is the random walk S<sub>k</sub> = X<sub>1</sub> + &hellip; + X<sub>k</sub>, so there are m independent sample trajectories, each of length n.
+      </p>
+      <div class="table-responsive mb-3">
+        <table class="table table-sm table-striped align-top">
+          <thead><tr><th>Model</th><th>Score</th><th>Mean &mu;</th><th>Variance &sigma;&sup2;</th><th>Meaning for the attacker</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Bernoulli(p)</strong></td><td>X &isin; {0, 1}, P(X = 1) = p</td><td>p</td><td>p(1 &minus; p)</td><td>1 if the system is penetrated, 0 otherwise. S<sub>n</sub> is the number of systems penetrated.</td></tr>
+            <tr><td><strong>Rademacher</strong></td><td>X &isin; {&minus;1, +1}, each with probability 1/2</td><td>0</td><td>1</td><td>A symmetric balance: +1 when the attacker gains ground, &minus;1 when the defence does. Neither side has an advantage.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The three quantities studied, and what theory says about them:</p>
+      <div class="table-responsive mb-3">
+        <table class="table table-sm table-striped align-top">
+          <thead><tr><th>Quantity</th><th>Mean</th><th>Variance</th><th>Expected behaviour as n grows</th></tr></thead>
+          <tbody>
+            <tr><td>Total score S<sub>n</sub></td><td>n&mu;</td><td>n&sigma;&sup2;</td><td>The spread grows like &radic;n and, if &mu; &ne; 0, the centre drifts like n.</td></tr>
+            <tr><td>Average score S<sub>n</sub>/n</td><td>&mu;</td><td>&sigma;&sup2;/n</td><td>Law of Large Numbers: S<sub>n</sub>/n &rarr; &mu; in probability, because the variance tends to 0.</td></tr>
+            <tr><td>Normalised score S<sub>n</sub>/&radic;n</td><td>&mu;&radic;n</td><td>&sigma;&sup2;</td><td>The variance stays constant. If &mu; = 0 (Rademacher) it converges in distribution to a normal N(0, &sigma;&sup2;) = N(0, 1) (Central Limit Theorem). If &mu; &ne; 0 it drifts away, unless it is centred first.</td></tr>
+            <tr><td>Standardised score Z<sub>n</sub> = (S<sub>n</sub> &minus; n&mu;) / (&sigma;&radic;n)</td><td>0</td><td>1</td><td>Converges in distribution to N(0, 1) for <em>both</em> models.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== 2. SIMULATION ===== -->
+    <section class="mb-5">
+      <h2 class="h4">2. Run the simulation</h2>
+      <p>
+        Choose the model, the number of attackers m and the increasing system sizes n. The simulation generates m trajectories of length up to the largest n
+        and records S<sub>n</sub> at every chosen n, so the distributions for different n come from the same trajectories.
+        The random numbers come from a small seeded generator (mulberry32), so a given seed always gives the same result.
+      </p>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+              <label for="model" class="form-label">Model</label>
+              <select id="model" class="form-select">
+                <option value="bern" selected>Bernoulli</option>
+                <option value="rad">Rademacher</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="pInput" class="form-label">p (Bernoulli)</label>
+              <input id="pInput" type="number" class="form-control" value="0.3" min="0.01" max="0.99" step="0.01">
+            </div>
+            <div class="col-md-2">
+              <label for="mInput" class="form-label">Attackers m</label>
+              <input id="mInput" type="number" class="form-control" value="5000" min="50" max="20000" step="50">
+            </div>
+            <div class="col-md-5">
+              <label for="nList" class="form-label">System sizes n (2 to 8 increasing values, at most 100000)</label>
+              <input id="nList" type="text" class="form-control font-monospace" value="4, 16, 64, 256, 1024, 4096">
+            </div>
+          </div>
+          <div class="row g-3 align-items-end mt-1">
+            <div class="col-md-3">
+              <label for="seedInput" class="form-label">Seed</label>
+              <input id="seedInput" type="number" class="form-control" value="2026" step="1">
+            </div>
+            <div class="col-auto"><button id="btnRun" type="button" class="btn btn-primary">Run simulation</button></div>
+            <div class="col-auto"><button id="btnSeed" type="button" class="btn btn-outline-secondary">New random seed and run</button></div>
+            <div class="col-auto small text-muted" id="simStatus"></div>
+          </div>
+          <div id="simError" class="text-danger small mt-2 d-none"></div>
+          <p id="modelInfo" class="small text-muted mt-3 mb-0"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3. TRAJECTORIES ===== -->
+    <section class="mb-5">
+      <h2 class="h4">3. Sample trajectories</h2>
+      <p>
+        The same 20 attackers are drawn four times: the total score, the total score centred on its mean (S<sub>k</sub> &minus; k&mu;, which removes the drift of the Bernoulli model and makes the spreading visible),
+        the average score and the normalised score. The black line is the theoretical mean and the red dashed lines are the mean &plusmn; 2 standard deviations.
+      </p>
+      <div class="mb-3"><canvas id="cvPath1" width="900" height="320" class="chart"></canvas></div>
+      <div class="mb-3"><canvas id="cvPath4" width="900" height="320" class="chart"></canvas></div>
+      <div class="mb-3"><canvas id="cvPath2" width="900" height="320" class="chart"></canvas></div>
+      <div class="mb-3"><canvas id="cvPath3" width="900" height="320" class="chart"></canvas></div>
+      <p class="mb-0">
+        <strong>Reading the plots.</strong> The total score S<sub>k</sub> drifts upward like k&mu; (Bernoulli) and fans out like &radic;k around its mean; the second plot shows this fan alone.
+        For Rademacher &mu; = 0, so the first two plots coincide.
+        The average S<sub>k</sub>/k squeezes towards &mu;: each single trajectory settles down, which is the Law of Large Numbers at work.
+        The normalised score S<sub>k</sub>/&radic;k neither explodes nor collapses: it keeps fluctuating inside a band of constant width, around 0 for Rademacher
+        and around &mu;&radic;k (a rising centre) for Bernoulli.
+      </p>
+    </section>
+
+    <!-- ===== 4. DISTRIBUTIONS ===== -->
+    <section class="mb-5">
+      <h2 class="h4">4. Distributions of the three quantities</h2>
+      <p>
+        Each plot shows the empirical cumulative distribution function (ECDF) of the m values, one curve per n, from light (small n) to dark (large n).
+        All curves of a plot share the same axes, so the effect of n is visible directly.
+      </p>
+      <div class="mb-3"><canvas id="cvEcdfS" width="900" height="340" class="chart"></canvas></div>
+      <p class="small text-muted">
+        <strong>Total score.</strong> The curves become flatter as n grows: the distribution spreads out, with standard deviation &sigma;&radic;n.
+      </p>
+      <div class="mb-3"><canvas id="cvEcdfAvg" width="900" height="340" class="chart"></canvas></div>
+      <p class="small text-muted">
+        <strong>Average score.</strong> The curves become steeper and steeper around &mu; (dashed line): the distribution collapses onto a single value.
+      </p>
+      <div class="mb-3"><canvas id="cvEcdfNorm" width="900" height="340" class="chart"></canvas></div>
+      <p class="small text-muted" id="normNote"></p>
+      <div class="mb-3"><canvas id="cvEcdfZ" width="900" height="340" class="chart"></canvas></div>
+      <p class="small text-muted">
+        <strong>Standardised score.</strong> For both models the curves approach the standard normal CDF (black dashed line). This is the Central Limit Theorem.
+      </p>
+
+      <div class="row g-2 align-items-end mb-2">
+        <div class="col-md-4">
+          <label for="nSel" class="form-label small mb-0">Choose n for the histogram and for section 8</label>
+          <select id="nSel" class="form-select form-select-sm select-auto"></select>
+        </div>
+      </div>
+      <div class="mb-2"><canvas id="cvHistZ" width="900" height="320" class="chart"></canvas></div>
+      <p class="small text-muted" id="histNote"></p>
+    </section>
+
+    <!-- ===== 5. LLN ===== -->
+    <section class="mb-5">
+      <h2 class="h4">5. Law of Large Numbers: convergence in probability of S<sub>n</sub>/n</h2>
+      <p>
+        S<sub>n</sub>/n converges in probability to &mu; if, for every &epsilon; &gt; 0, P(|S<sub>n</sub>/n &minus; &mu;| &gt; &epsilon;) &rarr; 0.
+        The simulation estimates this probability as the fraction of attackers whose average is farther than &epsilon; from &mu;.
+        It is compared with Chebyshev&rsquo;s bound &sigma;&sup2;/(n&epsilon;&sup2;), which is rigorous but loose, and with the normal approximation 2(1 &minus; &Phi;(&epsilon;&radic;n/&sigma;)), which comes from the Central Limit Theorem.
+      </p>
+      <div class="row g-2 align-items-end mb-3">
+        <div class="col-md-3">
+          <label for="epsInput" class="form-label small mb-0">Tolerance &epsilon; (0.005 to 0.9)</label>
+          <input id="epsInput" type="number" class="form-control" value="0.1" min="0.005" max="0.9" step="0.005">
+        </div>
+        <div class="col-auto"><button id="btnEps" type="button" class="btn btn-outline-primary">Update</button></div>
+      </div>
+      <div class="mb-3"><canvas id="cvLLN" width="900" height="320" class="chart"></canvas></div>
+      <div id="llnTable" class="mb-2"></div>
+      <p id="llnNote" class="small text-muted"></p>
+    </section>
+
+    <!-- ===== 6. VARIANCE ===== -->
+    <section class="mb-5">
+      <h2 class="h4">6. Variance under the different normalisations</h2>
+      <p>
+        The sample variance over the m attackers is compared with the theoretical value. On the log&ndash;log plot the variance of S<sub>n</sub> is a line of slope +1,
+        the variance of S<sub>n</sub>/n a line of slope &minus;1, and the variance of S<sub>n</sub>/&radic;n a horizontal line.
+        This is why &radic;n is the natural scale: it is the only normalisation that keeps the variance fixed and non-zero.
+      </p>
+      <div class="mb-3"><canvas id="cvVar" width="900" height="340" class="chart"></canvas></div>
+      <div id="varTable"></div>
+    </section>
+
+    <!-- ===== 7. CLT ===== -->
+    <section class="mb-5">
+      <h2 class="h4">7. Central Limit Theorem: convergence in distribution to the standard normal</h2>
+      <p>
+        For the standardised score Z<sub>n</sub> the table compares the simulation with theory. The Kolmogorov&ndash;Smirnov (KS) distance is the largest vertical gap between the CDF of Z<sub>n</sub> and the standard normal CDF &Phi;.
+        The &ldquo;exact&rdquo; column is computed from the exact binomial distribution, with no randomness.
+        The simulated KS distance cannot be reliably smaller than the sampling noise of about 1.36/&radic;m (95 % level).
+        Skewness and excess kurtosis are both 0 for a normal distribution; for Z<sub>n</sub> theory gives (1 &minus; 2p)/&radic;(np(1 &minus; p)) and (1 &minus; 6p(1 &minus; p))/(np(1 &minus; p)), with p = 1/2 for the Rademacher model.
+      </p>
+      <div id="cltTable" class="mb-3"></div>
+      <p id="cltNote" class="small text-muted"></p>
+    </section>
+
+    <!-- ===== 8. INTERPRETATION ===== -->
+    <section class="mb-5">
+      <h2 class="h4">8. Interpretation: system size n and number of attackers m</h2>
+      <p>
+        The aggregate score of the first m&prime; attackers on n systems is T = &Sigma;<sub>j</sub> S<sub>n</sub><sup>(j)</sup>, a sum of m&prime;n independent scores.
+        The table uses the n chosen in section 4 and the first m&prime; of the simulated attackers.
+        &ldquo;Typical best&rdquo; is the median of the best attacker under the normal approximation, n&mu; + &sigma;&radic;n &middot; &Phi;<sup>&minus;1</sup>(0.5<sup>1/m&prime;</sup>).
+      </p>
+      <div id="aggTable" class="mb-3"></div>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h3 class="h6">How n and m act on the aggregate penetration score</h3>
+          <ul class="mb-0">
+            <li><strong>System size n changes what a single attacker achieves.</strong> The total S<sub>n</sub> has mean n&mu; and standard deviation &sigma;&radic;n. The <em>fraction</em> of the systems compromised, S<sub>n</sub>/n, has standard deviation &sigma;/&radic;n: the larger the infrastructure, the more predictable the fraction. This is the Law of Large Numbers. In absolute terms, however, the fluctuations of the total grow with &radic;n.</li>
+            <li><strong>Number of attackers m scales the aggregate.</strong> The expected aggregate T grows linearly with m (mean m&prime;n&mu;) and its standard deviation like &radic;m&prime;. The grand average T/(m&prime;n) has standard deviation &sigma;/&radic;(m&prime;n): for this quantity, n and m play exactly the same role.</li>
+            <li><strong>But m does not change the distribution of one attacker.</strong> Each attacker still ends up with the same S<sub>n</sub>. What more attackers change is the worst case: the best of m&prime; attackers has a score of about n&mu; + &sigma;&radic;n &middot; &radic;(2 ln m&prime;), so it keeps growing with m&prime; (slowly, like &radic;(ln m&prime;)). In the symmetric Rademacher case, where the average attacker gains nothing, the best attacker still gains a positive score of order &sigma;&radic;n.</li>
+            <li><strong>For the simulation itself</strong>, m controls precision, not the phenomenon: the Monte Carlo error of an estimated probability or of the KS distance shrinks like 1/&radic;m, so m should be large enough that the effects being studied are larger than this noise.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 9. TAKEAWAYS ===== -->
+    <section class="mb-5">
+      <h2 class="h4">9. Key takeaways and limits of the model</h2>
+      <div class="card">
+        <div class="card-body">
+          <ul>
+            <li><strong>Large numbers.</strong> The average score S<sub>n</sub>/n has variance &sigma;&sup2;/n &rarr; 0 and converges to &mu; in probability. The simulation shows the same on individual trajectories.</li>
+            <li><strong>Three normalisations, three behaviours.</strong> S<sub>n</sub> spreads (variance n&sigma;&sup2;), S<sub>n</sub>/n collapses (variance &sigma;&sup2;/n), S<sub>n</sub>/&radic;n keeps a constant variance &sigma;&sup2; and is the one that shows a limit shape.</li>
+            <li><strong>Normal limit.</strong> In the Rademacher case S<sub>n</sub>/&radic;n converges in distribution to N(0, 1). For Bernoulli the same limit holds only for the centred and scaled Z<sub>n</sub>; the plain S<sub>n</sub>/&radic;n drifts like p&radic;n.</li>
+            <li><strong>Speed of convergence.</strong> The distance to the normal shrinks like 1/&radic;n (Berry&ndash;Esseen). It is slower for a skewed Bernoulli (p far from 1/2) and for small n, where the discreteness of the score is visible.</li>
+            <li><strong>Security reading.</strong> With many systems the compromised fraction is predictable, but the absolute number of compromised systems fluctuates more. With many attackers the aggregate grows linearly and the best attacker does better and better.</li>
+          </ul>
+          <p class="mb-0">
+            <strong>Limits.</strong> Real systems are not independent (shared software, shared credentials), real attackers adapt and learn, and the penetration probability is not the same for every system.
+            With dependence or heavy tails the &radic;n scaling and the normal limit can fail, and the aggregate risk can be far larger than the i.i.d. model suggests.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REFERENCES ===== -->
+    <section class="mb-5">
+      <h2 class="h4">References</h2>
+      <p class="small text-muted">
+        The model, the two score distributions and the questions come from the assignment. All simulated numbers, tables and charts are computed by the code running in the browser
+        (with the small non-cryptographic generator mulberry32), the &ldquo;exact&rdquo; KS distances come from the exact binomial distribution, and the interpretation in section 8 and the takeaways are the author's own summary based on the sources below.
+      </p>
+
+      <h3 class="h6 mt-3">Probability theory</h3>
+      <ul class="small">
+        <li class="mb-2 text-break">C. M. Grinstead, J. L. Snell, <em>Introduction to Probability</em>, 2nd revised edition, American Mathematical Society, 1997, chapter 8 (Law of Large Numbers) and chapter 9 (Central Limit Theorem). <a href="https://textbooks.aimath.org/textbooks/approved-textbooks/grinstead-snell/" target="_blank" rel="noopener">https://textbooks.aimath.org/textbooks/approved-textbooks/grinstead-snell/</a></li>
+        <li class="mb-2 text-break">I. G. Shevtsova, <em>On the absolute constants in the Berry&ndash;Esseen type inequalities for identically distributed summands</em>, arXiv:1111.6554, 2011. <a href="https://arxiv.org/abs/1111.6554" target="_blank" rel="noopener">https://arxiv.org/abs/1111.6554</a></li>
+      </ul>
+
+      <h3 class="h6 mt-3">Statistical tools and numerical methods</h3>
+      <ul class="small mb-0">
+        <li class="mb-2 text-break">NIST/SEMATECH, <em>e-Handbook of Statistical Methods</em>, section 1.3.5.16, Kolmogorov&ndash;Smirnov Goodness-of-Fit Test. <a href="https://itl.nist.gov/div898/handbook/eda/section3/eda35g.htm" target="_blank" rel="noopener">https://itl.nist.gov/div898/handbook/eda/section3/eda35g.htm</a></li>
+        <li class="mb-0 text-break">M. Abramowitz, I. A. Stegun (eds.), <em>Handbook of Mathematical Functions</em>, National Bureau of Standards, 1964, formula 7.1.26 (approximation of the error function used to compute the normal CDF); a code example is at <a href="https://www.johndcook.com/blog/?p=15447" target="_blank" rel="noopener">https://www.johndcook.com/blog/?p=15447</a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="bg-light border-top py-3 mt-auto">
+    <div class="container text-center text-muted small">
+      &copy; <span id="anno"></span> Vincenzo &middot; Homework
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="script.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      if (typeof init !== "function") {
+        var box = document.createElement("div");
+        box.className = "alert alert-danger m-3";
+        box.textContent = "script.js did not load or contains an error. Open the browser console (F12) for details.";
+        document.body.prepend(box);
+      }
+    });
+  </script>
+</body>
+</html>
