@@ -1,7 +1,9 @@
 /* Homework 4: page-specific styles */
 
 canvas.chart {
+  display: block;
   width: 100%;
+  max-width: 600px;
   height: auto;
   background: #fff;
   border: 1px solid #dee2e6;
