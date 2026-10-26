@@ -134,13 +134,15 @@
     </section>
 
     <!-- ===== 4. DISTRIBUTIONS ===== -->
+    <!-- ===== 4. DISTRIBUTIONS ===== -->
     <section class="mb-5">
       <h2 class="h4">4. Distributions of the three quantities</h2>
       <p>
         Each plot shows the empirical cumulative distribution function (ECDF) of the m values, one curve per n, from light (small n) to dark (large n).
         All curves of a plot share the same axes, so the effect of n is visible directly.
       </p>
-            <div class="row g-3 mb-3">
+
+      <div class="row g-3 mb-3">
         <div class="col-lg-6">
           <canvas id="cvEcdfS" width="560" height="390" class="chart"></canvas>
           <p class="small text-muted mt-2 mb-0">
@@ -173,17 +175,6 @@
           <p class="small text-muted mb-0" id="histNote"></p>
         </div>
       </div>
-        <strong>Standardised score.</strong> For both models the curves approach the standard normal CDF (black dashed line). This is the Central Limit Theorem.
-      </p>
-
-      <div class="row g-2 align-items-end mb-2">
-        <div class="col-md-4">
-          <label for="nSel" class="form-label small mb-0">Choose n for the histogram and for section 8</label>
-          <select id="nSel" class="form-select form-select-sm select-auto"></select>
-        </div>
-      </div>
-      <div class="mb-2"><canvas id="cvHistZ" width="900" height="320" class="chart"></canvas></div>
-      <p class="small text-muted" id="histNote"></p>
     </section>
 
     <!-- ===== 5. LLN ===== -->
