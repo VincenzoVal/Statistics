@@ -118,10 +118,12 @@
         The same 20 attackers are drawn four times: the total score, the total score centred on its mean (S<sub>k</sub> &minus; k&mu;, which removes the drift of the Bernoulli model and makes the spreading visible),
         the average score and the normalised score. The black line is the theoretical mean and the red dashed lines are the mean &plusmn; 2 standard deviations.
       </p>
-      <div class="mb-3"><canvas id="cvPath1" width="900" height="320" class="chart"></canvas></div>
-      <div class="mb-3"><canvas id="cvPath4" width="900" height="320" class="chart"></canvas></div>
-      <div class="mb-3"><canvas id="cvPath2" width="900" height="320" class="chart"></canvas></div>
-      <div class="mb-3"><canvas id="cvPath3" width="900" height="320" class="chart"></canvas></div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6"><canvas id="cvPath1" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6"><canvas id="cvPath4" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6"><canvas id="cvPath2" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6"><canvas id="cvPath3" width="560" height="350" class="chart"></canvas></div>
+      </div>
       <p class="mb-0">
         <strong>Reading the plots.</strong> The total score S<sub>k</sub> drifts upward like k&mu; (Bernoulli) and fans out like &radic;k around its mean; the second plot shows this fan alone.
         For Rademacher &mu; = 0, so the first two plots coincide.
@@ -138,18 +140,39 @@
         Each plot shows the empirical cumulative distribution function (ECDF) of the m values, one curve per n, from light (small n) to dark (large n).
         All curves of a plot share the same axes, so the effect of n is visible directly.
       </p>
-      <div class="mb-3"><canvas id="cvEcdfS" width="900" height="340" class="chart"></canvas></div>
-      <p class="small text-muted">
-        <strong>Total score.</strong> The curves become flatter as n grows: the distribution spreads out, with standard deviation &sigma;&radic;n.
-      </p>
-      <div class="mb-3"><canvas id="cvEcdfAvg" width="900" height="340" class="chart"></canvas></div>
-      <p class="small text-muted">
-        <strong>Average score.</strong> The curves become steeper and steeper around &mu; (dashed line): the distribution collapses onto a single value.
-      </p>
-      <div class="mb-3"><canvas id="cvEcdfNorm" width="900" height="340" class="chart"></canvas></div>
-      <p class="small text-muted" id="normNote"></p>
-      <div class="mb-3"><canvas id="cvEcdfZ" width="900" height="340" class="chart"></canvas></div>
-      <p class="small text-muted">
+            <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvEcdfS" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>Total score.</strong> The curves become flatter as n grows: the distribution spreads out, with standard deviation &sigma;&radic;n.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvEcdfAvg" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>Average score.</strong> The curves become steeper and steeper around &mu; (dashed line): the distribution collapses onto a single value.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvEcdfNorm" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0" id="normNote"></p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvEcdfZ" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>Standardised score.</strong> For both models the curves approach the standard normal CDF (black dashed line). This is the Central Limit Theorem.
+          </p>
+        </div>
+      </div>
+
+      <div class="row g-3 align-items-start mb-2">
+        <div class="col-lg-6"><canvas id="cvHistZ" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6">
+          <label for="nSel" class="form-label small mb-0">Choose n for the histogram and for section 8</label>
+          <select id="nSel" class="form-select form-select-sm select-auto mb-2"></select>
+          <p class="small text-muted mb-0" id="histNote"></p>
+        </div>
+      </div>
         <strong>Standardised score.</strong> For both models the curves approach the standard normal CDF (black dashed line). This is the Central Limit Theorem.
       </p>
 
@@ -178,9 +201,13 @@
         </div>
         <div class="col-auto"><button id="btnEps" type="button" class="btn btn-outline-primary">Update</button></div>
       </div>
-      <div class="mb-3"><canvas id="cvLLN" width="900" height="320" class="chart"></canvas></div>
-      <div id="llnTable" class="mb-2"></div>
-      <p id="llnNote" class="small text-muted"></p>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6"><canvas id="cvLLN" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6">
+          <div id="llnTable" class="mb-2"></div>
+          <p id="llnNote" class="small text-muted mb-0"></p>
+        </div>
+      </div>
     </section>
 
     <!-- ===== 6. VARIANCE ===== -->
@@ -191,8 +218,10 @@
         the variance of S<sub>n</sub>/n a line of slope &minus;1, and the variance of S<sub>n</sub>/&radic;n a horizontal line.
         This is why &radic;n is the natural scale: it is the only normalisation that keeps the variance fixed and non-zero.
       </p>
-      <div class="mb-3"><canvas id="cvVar" width="900" height="340" class="chart"></canvas></div>
-      <div id="varTable"></div>
+      <div class="row g-3">
+        <div class="col-lg-6"><canvas id="cvVar" width="560" height="390" class="chart"></canvas></div>
+        <div class="col-lg-6"><div id="varTable"></div></div>
+      </div>
     </section>
 
     <!-- ===== 7. CLT ===== -->
