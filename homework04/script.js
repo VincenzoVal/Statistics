@@ -97,8 +97,12 @@ const tickLabel = (v) => {
 };
 
 function plot(canvas, o) {
+  const W = Number(canvas.dataset.w || canvas.width), H = Number(canvas.dataset.h || canvas.height);
+  canvas.dataset.w = W; canvas.dataset.h = H;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
   const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const okv = (v, lg) => Number.isFinite(v) && (!lg || v > 0);
   let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
   const touch = (x, y) => {
@@ -407,7 +411,7 @@ function renderVar() {
     const vS = a.varS, vA = a.varS / (n * n), vN = a.varS / n;
     eS.push([n, vS]); eA.push([n, vA]); eN.push([n, vN]);
     tS.push([n, n * sigma2]); tA.push([n, sigma2 / n]); tN.push([n, sigma2]);
-    rows.push([fmtInt(n), g(vS), g(n * sigma2), g(vA), g(sigma2 / n), g(vN), g(sigma2)]);
+    rows.push([fmtInt(n), `${g(vS)} / ${g(n * sigma2)}`, `${g(vA)} / ${g(sigma2 / n)}`, `${g(vN)} / ${g(sigma2)}`]);
   });
   plot($("cvVar"), {
     title: `${modelName()}: variance of the three quantities (log-log scale)`, xlabel: "n", ylabel: "variance", xlog: true, ylog: true,
@@ -421,7 +425,7 @@ function renderVar() {
     ],
   });
   $("varTable").innerHTML = table(
-    ["n", "Var(S<sub>n</sub>) simulated", "theory n&sigma;&sup2;", "Var(S<sub>n</sub>/n) simulated", "theory &sigma;&sup2;/n", "Var(S<sub>n</sub>/&radic;n) simulated", "theory &sigma;&sup2;"], rows, "compact") +
+    ["n", "Var(S<sub>n</sub>): simulated / theory n&sigma;&sup2;", "Var(S<sub>n</sub>/n): simulated / theory &sigma;&sup2;/n", "Var(S<sub>n</sub>/&radic;n): simulated / theory &sigma;&sup2;"], rows, "compact") +
     `<p class="small text-muted mt-2 mb-0">Here &sigma;&sup2; = ${g(sigma2)}. The relative Monte Carlo error of a variance estimate is about &radic;(2/m) = ${g(Math.sqrt(2 / SIM.m) * 100, 2)} %.</p>`;
 }
 
