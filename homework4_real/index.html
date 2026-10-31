@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Statistics - HMWK 4</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/custom.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container">
+      <span class="navbar-brand brand-statico">Statistics 2026/2027</span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+
+    <h1 class="mb-1">HMWK 4 &mdash; Welford&rsquo;s Recurrences and the Sampling Mean and Variance of Penetration Scores</h1>
+    <p class="lead text-muted mb-4">Exercise 1: online formulas for the mean, the sum of squares and the variance &middot; Exercise 2: what m hackers&rsquo; sample statistics say about &mu; and &sigma;&sup2;</p>
+
+    <noscript><div class="alert alert-danger">This page needs JavaScript to run the interactive demos.</div></noscript>
+    <div id="jsError" class="alert alert-danger d-none"></div>
+
+    <section class="mb-5">
+      <h2 class="h4">Overview</h2>
+      <p class="mb-0">
+        <strong>Exercise 1</strong> derives Welford&rsquo;s recurrence formulas for the sum of squares (SS) and the variance, in the same way as Knuth&rsquo;s recurrence for the mean,
+        and turns them into a three-line algorithm that processes the data one value at a time.
+        <strong>Exercise 2</strong> uses that algorithm in a simulation: m hackers each attempt n systems and obtain a score from 0 to 10 for each system;
+        for every hacker the sample mean and the sample variance are computed with Welford&rsquo;s formulas, and their averages are compared with the theoretical &mu; and &sigma;&sup2;.
+      </p>
+    </section>
+
+    <!-- =================== EXERCISE 1 =================== -->
+    <section class="mb-5">
+      <h2 class="h4">Exercise 1 &mdash; Welford&rsquo;s recurrence formulas</h2>
+
+      <h3 class="h5">1.1 Notation and Knuth&rsquo;s recurrence for the mean</h3>
+      <p>Let x<sub>1</sub>, x<sub>2</sub>, &hellip; be the observations. After k of them we define:</p>
+      <div class="eq">M<sub>k</sub> = (1/k) &sum;<sub>i=1..k</sub> x<sub>i</sub> &nbsp;&nbsp; (mean)</div>
+      <div class="eq">SS<sub>k</sub> = &sum;<sub>i=1..k</sub> (x<sub>i</sub> &minus; M<sub>k</sub>)&sup2; &nbsp;&nbsp; (sum of squares of the deviations from the current mean)</div>
+      <div class="eq">s<sub>k</sub>&sup2; = SS<sub>k</sub> / (k &minus; 1) &nbsp;&nbsp; (sample variance, k &ge; 2)</div>
+      <p>
+        <strong>Knuth&rsquo;s recurrence.</strong> Separate the last term from the sum: k&middot;M<sub>k</sub> = &sum;<sub>i=1..k&minus;1</sub> x<sub>i</sub> + x<sub>k</sub> = (k &minus; 1)&middot;M<sub>k&minus;1</sub> + x<sub>k</sub>.
+        Dividing by k and rearranging:
+      </p>
+      <div class="eq">M<sub>k</sub> = M<sub>k&minus;1</sub> + (x<sub>k</sub> &minus; M<sub>k&minus;1</sub>) / k</div>
+      <p class="mb-0">
+        The new mean is the old mean plus a correction proportional to the &ldquo;surprise&rdquo; &delta;<sub>k</sub> = x<sub>k</sub> &minus; M<sub>k&minus;1</sub>.
+        The same approach, writing the quantity at step k in terms of the quantity at step k &minus; 1 and the new value, is now applied to SS.
+      </p>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">1.2 Recurrence for the sum of squares SS</h3>
+      <p><strong>Step 1.</strong> Expand the square in the definition of SS<sub>k</sub>:</p>
+      <div class="eq">SS<sub>k</sub> = &sum; x<sub>i</sub>&sup2; &minus; 2M<sub>k</sub>&sum; x<sub>i</sub> + k&middot;M<sub>k</sub>&sup2; = &sum;<sub>i=1..k</sub> x<sub>i</sub>&sup2; &minus; k&middot;M<sub>k</sub>&sup2;</div>
+      <p><strong>Step 2.</strong> Take the difference between step k and step k &minus; 1; the sums of squares differ only by the last term:</p>
+      <div class="eq">SS<sub>k</sub> &minus; SS<sub>k&minus;1</sub> = x<sub>k</sub>&sup2; &minus; k&middot;M<sub>k</sub>&sup2; + (k &minus; 1)&middot;M<sub>k&minus;1</sub>&sup2;</div>
+      <p><strong>Step 3.</strong> Use the relation (k &minus; 1)&middot;M<sub>k&minus;1</sub> = k&middot;M<sub>k</sub> &minus; x<sub>k</sub> (from the mean recurrence) to rewrite the last term:</p>
+      <div class="eq">SS<sub>k</sub> &minus; SS<sub>k&minus;1</sub> = x<sub>k</sub>&sup2; &minus; k&middot;M<sub>k</sub>&sup2; + (k&middot;M<sub>k</sub> &minus; x<sub>k</sub>)&middot;M<sub>k&minus;1</sub>
+        = x<sub>k</sub>&middot;(x<sub>k</sub> &minus; M<sub>k&minus;1</sub>) &minus; k&middot;M<sub>k</sub>&middot;(M<sub>k</sub> &minus; M<sub>k&minus;1</sub>)</div>
+      <p><strong>Step 4.</strong> Knuth&rsquo;s recurrence says k&middot;(M<sub>k</sub> &minus; M<sub>k&minus;1</sub>) = x<sub>k</sub> &minus; M<sub>k&minus;1</sub>, so the second term is M<sub>k</sub>&middot;(x<sub>k</sub> &minus; M<sub>k&minus;1</sub>), and:</p>
+      <div class="eq"><strong>SS<sub>k</sub> = SS<sub>k&minus;1</sub> + (x<sub>k</sub> &minus; M<sub>k&minus;1</sub>)&middot;(x<sub>k</sub> &minus; M<sub>k</sub>)</strong></div>
+      <p>
+        <strong>Equivalent form.</strong> From the mean recurrence x<sub>k</sub> &minus; M<sub>k</sub> = (1 &minus; 1/k)&middot;(x<sub>k</sub> &minus; M<sub>k&minus;1</sub>), hence
+      </p>
+      <div class="eq">SS<sub>k</sub> = SS<sub>k&minus;1</sub> + ((k &minus; 1)/k)&middot;&delta;<sub>k</sub>&sup2;, &nbsp; with &delta;<sub>k</sub> = x<sub>k</sub> &minus; M<sub>k&minus;1</sub></div>
+      <p class="mb-0">
+        <strong>Start.</strong> M<sub>0</sub> = 0 and SS<sub>0</sub> = 0, so for k = 1 we get M<sub>1</sub> = x<sub>1</sub> and SS<sub>1</sub> = 0.
+        <strong>Remark.</strong> M<sub>k</sub> always lies between M<sub>k&minus;1</sub> and x<sub>k</sub>, so the two factors have the same sign and every increment is &ge; 0: SS can only grow and never becomes negative.
+      </p>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">1.3 Recurrence for the variance</h3>
+      <p>Dividing the recurrence for SS by k &minus; 1 gives the sample variance, and dividing by k the &ldquo;population&rdquo; variance v<sub>k</sub> = SS<sub>k</sub>/k:</p>
+      <div class="eq"><strong>s<sub>k</sub>&sup2; = ((k &minus; 2)/(k &minus; 1))&middot;s<sub>k&minus;1</sub>&sup2; + &delta;<sub>k</sub>&sup2;/k</strong> &nbsp;&nbsp; (k &ge; 2; for k = 2 the first term vanishes and s<sub>2</sub>&sup2; = &delta;<sub>2</sub>&sup2;/2)</div>
+      <div class="eq">v<sub>k</sub> = ((k &minus; 1)/k)&middot;v<sub>k&minus;1</sub> + ((k &minus; 1)/k&sup2;)&middot;&delta;<sub>k</sub>&sup2;</div>
+      <p class="mb-0">
+        In practice one keeps M<sub>k</sub> and SS<sub>k</sub> and divides by k &minus; 1 only when the variance is needed: this is simpler and avoids a division at every step.
+      </p>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">1.4 The code</h3>
+      <p>The core of the algorithm is the three highlighted lines. The variable <code>n</code> counts the values read so far.</p>
+      <pre class="code"><code>let n = 0, mean = 0, ss = 0;
+for (const x of data) {
+  n += 1;
+<span class="hl">  const d = x - mean;        // delta_k = x_k - M_(k-1)</span>
+<span class="hl">  mean += d / n;             // M_k  = M_(k-1) + delta_k / k           (Knuth)</span>
+<span class="hl">  ss   += d * (x - mean);    // SS_k = SS_(k-1) + (x_k - M_(k-1)) (x_k - M_k)  (Welford)</span>
+}
+const variance = ss / (n - 1);   // sample variance (n &gt;= 2)</code></pre>
+      <p class="small text-muted mb-1">The same algorithm in Python:</p>
+      <pre class="code"><code>n, mean, ss = 0, 0.0, 0.0
+for x in data:
+    n += 1
+    d = x - mean
+    mean += d / n
+    ss += d * (x - mean)
+variance = ss / (n - 1)</code></pre>
+      <p class="mb-0">The algorithm is <em>online</em>: it reads each value once, needs only three numbers of memory, and the mean and variance are available after every step.</p>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">1.5 Live check: recurrence against the direct definition</h3>
+      <p class="small text-muted">
+        Enter some numbers (separated by commas or spaces). For every k the table shows Welford&rsquo;s quantities and, in the last columns, the mean and the sum of squares recomputed from scratch with the definitions of section 1.1.
+      </p>
+      <div class="row g-2 align-items-end mb-3">
+        <div class="col-lg-8">
+          <label for="stepData" class="form-label small mb-0">Data</label>
+          <input id="stepData" type="text" class="form-control font-monospace" value="2, 7, 4, 4, 9, 5, 1, 6" spellcheck="false">
+        </div>
+        <div class="col-auto"><button id="btnSteps" type="button" class="btn btn-primary">Compute</button></div>
+      </div>
+      <div id="stepsErr" class="text-danger small d-none"></div>
+      <div id="stepsOut"></div>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">1.6 Why Welford and not the textbook formula?</h3>
+      <p>
+        The textbook shortcut variance = (&sum;x&sup2; &minus; (&sum;x)&sup2;/n)/(n &minus; 1) subtracts two huge, almost equal numbers when the data are large compared with their spread,
+        and the cancellation destroys the result (it can even become negative). Welford adds only non-negative increments computed from small differences.
+        The test below uses 1000 integer values of the form offset + (a random integer from 0 to 10), so that the exact variance can be computed with exact integer arithmetic (BigInt) and used as reference.
+      </p>
+      <div class="row g-2 align-items-end mb-3">
+        <div class="col-md-4">
+          <label for="offsetSel" class="form-label small mb-0">Offset added to every value</label>
+          <select id="offsetSel" class="form-select">
+            <option value="0">0</option>
+            <option value="1000000">10^6</option>
+            <option value="1000000000" selected>10^9</option>
+            <option value="1000000000000">10^12</option>
+            <option value="1000000000000000">10^15</option>
+          </select>
+        </div>
+        <div class="col-auto"><button id="btnStab" type="button" class="btn btn-primary">Compare the methods</button></div>
+      </div>
+      <div id="stabOut"></div>
+    </section>
+
+    <!-- =================== EXERCISE 2 =================== -->
+    <section class="mb-5">
+      <h2 class="h4">Exercise 2 &mdash; Sampling mean and variance of the scores of m hackers</h2>
+      <h3 class="h5">2.1 Set-up</h3>
+      <p>
+        Each penetration attempt gets an integer score from 0 to 10 drawn from a fixed distribution with mean &mu; and variance &sigma;&sup2;.
+        There are m hackers and each attempts n systems, so each hacker produces a trajectory of n scores.
+        For each hacker Welford&rsquo;s formulas give the sample mean M<sub>n</sub> and the sample variance s&sup2; = SS<sub>n</sub>/(n &minus; 1);
+        the simulation also records SS<sub>n</sub>/n, the &ldquo;uncorrected&rdquo; variance, to show why the denominator n &minus; 1 is used.
+        The values for different n are read from the <em>same</em> trajectories (a trajectory of length 1000 passes through the states of length 2, 5, 10, &hellip;), which is exactly what an online algorithm allows.
+      </p>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+              <label for="distSel" class="form-label">Score distribution (on 0, 1, ..., 10)</label>
+              <select id="distSel" class="form-select">
+                <option value="bin" selected>Binomial(10, p)</option>
+                <option value="uni">Discrete uniform on 0..10</option>
+                <option value="cus">Custom weights</option>
+              </select>
+            </div>
+            <div class="col-md-2" id="binBox">
+              <label for="binP" class="form-label">p</label>
+              <input id="binP" type="number" class="form-control" value="0.3" min="0.01" max="0.99" step="0.01">
+            </div>
+            <div class="col-md-6 d-none" id="cusBox">
+              <label for="cusW" class="form-label">11 weights, for the scores 0 to 10</label>
+              <input id="cusW" type="text" class="form-control font-monospace" value="1, 2, 4, 6, 8, 8, 6, 4, 3, 2, 1" spellcheck="false">
+            </div>
+          </div>
+          <div class="row g-3 align-items-end mt-1">
+            <div class="col-md-2">
+              <label for="mInput" class="form-label">Hackers m</label>
+              <input id="mInput" type="number" class="form-control" value="5000" min="50" max="20000" step="50">
+            </div>
+            <div class="col-md-5">
+              <label for="nList" class="form-label">Systems per hacker n (2 to 8 values, from 2 to 5000)</label>
+              <input id="nList" type="text" class="form-control font-monospace" value="2, 5, 10, 30, 100, 300, 1000">
+            </div>
+            <div class="col-md-2">
+              <label for="seedInput" class="form-label">Seed</label>
+              <input id="seedInput" type="number" class="form-control" value="2026" step="1">
+            </div>
+            <div class="col-auto"><button id="btnRun" type="button" class="btn btn-primary">Run</button></div>
+            <div class="col-auto"><button id="btnSeed" type="button" class="btn btn-outline-secondary">New random seed and run</button></div>
+          </div>
+          <div class="small text-muted mt-2" id="simStatus"></div>
+          <div id="simError" class="text-danger small mt-2 d-none"></div>
+        </div>
+      </div>
+
+      <div class="row g-3 align-items-start mb-2">
+        <div class="col-lg-6"><canvas id="cvPmf" width="560" height="320" class="chart"></canvas></div>
+        <div class="col-lg-6" id="distInfo"></div>
+      </div>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">2.2 Averages of the sample statistics against &mu; and &sigma;&sup2;</h3>
+      <p>
+        For every n the table gives the average of the m sample means, the average of the m sample variances, and the z-score of each average, that is the distance from the theoretical value in units of its own
+        Monte Carlo standard error (the standard deviation across hackers divided by &radic;m). Values between about &minus;3 and +3 mean that the average is statistically indistinguishable from the theory.
+      </p>
+      <div id="meanTable" class="mb-3"></div>
+      <div id="varTable" class="mb-3"></div>
+      <p id="biasNote" class="small text-muted"></p>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6"><canvas id="cvAvgMean" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6"><canvas id="cvAvgVar" width="560" height="350" class="chart"></canvas></div>
+      </div>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">2.3 Variability of the sample mean and of the sample variance as n grows</h3>
+      <p>
+        The standard deviation across the m hackers measures how much a single hacker&rsquo;s estimate fluctuates. For the sample mean theory gives &sigma;/&radic;n.
+        For the sample variance it gives &radic;[(&mu;<sub>4</sub> &minus; (n &minus; 3)/(n &minus; 1)&middot;&sigma;<sup>4</sup>)/n], where &mu;<sub>4</sub> is the fourth central moment of the score distribution.
+        On log&ndash;log axes both are straight lines of slope &minus;1/2.
+      </p>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6"><canvas id="cvSdMean" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6"><canvas id="cvSdVar" width="560" height="350" class="chart"></canvas></div>
+      </div>
+
+      <div class="row g-3 align-items-start mb-2">
+        <div class="col-lg-12">
+          <label for="nSel" class="form-label small mb-0">Choose n for the two histograms</label>
+          <select id="nSel" class="form-select form-select-sm select-auto"></select>
+        </div>
+      </div>
+      <div class="row g-3 mb-2">
+        <div class="col-lg-6"><canvas id="cvHistMean" width="560" height="350" class="chart"></canvas></div>
+        <div class="col-lg-6"><canvas id="cvHistVar" width="560" height="350" class="chart"></canvas></div>
+      </div>
+      <p id="histNote" class="small text-muted"></p>
+    </section>
+
+    <section class="mb-5">
+      <h3 class="h5">2.4 Conclusions</h3>
+      <div class="card">
+        <div class="card-body">
+          <p class="mb-2"><strong>What do the comparisons show?</strong></p>
+          <ul>
+            <li><strong>The sample mean is unbiased.</strong> The average of the sample means equals &mu; for every n, within Monte Carlo noise: E[M<sub>n</sub>] = &mu;.</li>
+            <li><strong>The sample variance with denominator n &minus; 1 is unbiased.</strong> Its average equals &sigma;&sup2; for every n: E[SS<sub>n</sub>/(n &minus; 1)] = &sigma;&sup2;.</li>
+            <li><strong>Dividing by n is not.</strong> The average of SS<sub>n</sub>/n is (n &minus; 1)/n &middot; &sigma;&sup2;: too small by 50 % for n = 2, by 10 % for n = 10, almost correct for large n. The reason is that the deviations are measured from the sample mean, which is by construction closer to the data than the true &mu; is, so SS<sub>n</sub> loses one degree of freedom (Bessel&rsquo;s correction).</li>
+          </ul>
+          <p class="mb-2"><strong>Why is this useful in inferential statistics?</strong></p>
+          <ul>
+            <li>In practice &mu; and &sigma;&sup2; are unknown and only one sample is available. The sample mean and variance are <em>estimators</em>; being unbiased means that they do not err systematically in one direction, and that averaging over many samples recovers the truth, which is what this experiment shows.</li>
+            <li>Each estimate is a random variable with its own <em>sampling distribution</em>. The m hackers are a way of seeing that distribution: the histograms of section 2.3 are the distributions of M<sub>n</sub> and of s&sup2;.</li>
+            <li>The spread of the sample mean, the standard error &sigma;/&radic;n, is estimated by s/&radic;n and is the basis of confidence intervals and of t-tests; this needs a reliable s&sup2;, hence the n &minus; 1.</li>
+            <li>Welford&rsquo;s recurrences make these estimates available online, with constant memory and good numerical stability, even for data streams that never end.</li>
+          </ul>
+          <p class="mb-2"><strong>How does n affect the variability?</strong></p>
+          <ul class="mb-0">
+            <li>The standard deviation of the sample means decreases like &sigma;/&radic;n: to halve the error one needs four times as many systems per hacker. The bias does not change with n (it is zero); only the spread does.</li>
+            <li>The sample variance also becomes more concentrated, with a standard deviation that shrinks like 1/&radic;n, but it is a noisier estimator than the mean: relative to its own target it fluctuates more, and how much more depends on the fourth moment of the scores (heavier tails, larger fluctuations). For normal data its variance would be 2&sigma;<sup>4</sup>/(n &minus; 1).</li>
+            <li>Both estimators are therefore <em>consistent</em>: they converge in probability to &mu; and &sigma;&sup2; as n grows, which is the Law of Large Numbers of Homework 4 applied to the mean and to the variance.</li>
+            <li>The number of hackers m does not change the quality of one hacker&rsquo;s estimate. It only sets how precisely the experiment itself measures the averages and standard deviations (error of order 1/&radic;m).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REFERENCES ===== -->
+    <section class="mb-5">
+      <h2 class="h4">References</h2>
+      <p class="small text-muted">
+        The exercises, the score range 0 to 10 and the questions come from the assignment. The derivations of Exercise 1 follow the approach requested and agree with the sources below;
+        all numbers, tables and charts of Exercise 2 are computed by the code running in the browser, and the conclusions in section 2.4 are the author&rsquo;s own summary.
+      </p>
+
+      <h3 class="h6 mt-3">Recurrence formulas and numerical stability</h3>
+      <ul class="small">
+        <li class="mb-2 text-break">B. P. Welford, <em>Note on a method for calculating corrected sums of squares and products</em>, Technometrics 4(3), 1962, pp. 419&ndash;420. <a href="https://doi.org/10.1080/00401706.1962.10490022" target="_blank" rel="noopener">https://doi.org/10.1080/00401706.1962.10490022</a></li>
+        <li class="mb-2 text-break">D. E. Knuth, <em>The Art of Computer Programming, Volume 2: Seminumerical Algorithms</em>, 3rd edition, Addison-Wesley, 1997, section 4.2.2 (recurrence for the mean and the sum of squares, p. 232). A short description of the method is at <a href="https://www.johndcook.com/blog/?p=14874" target="_blank" rel="noopener">https://www.johndcook.com/blog/?p=14874</a></li>
+        <li class="mb-2 text-break">T. F. Chan, G. H. Golub, R. J. LeVeque, <em>Algorithms for computing the sample variance: analysis and recommendations</em>, The American Statistician 37(3), 1983, pp. 242&ndash;247. <a href="https://doi.org/10.1080/00031305.1983.10483115" target="_blank" rel="noopener">https://doi.org/10.1080/00031305.1983.10483115</a></li>
+      </ul>
+
+      <h3 class="h6 mt-3">Sampling distribution of the mean and of the variance</h3>
+      <ul class="small mb-0">
+        <li class="mb-2 text-break"><em>A few properties of sample variance</em>, arXiv:1809.03774, section 2.5 (variance of the sample variance: Var[s&sup2;] = &mu;<sub>4</sub>/n &minus; (n &minus; 3)&sigma;<sup>4</sup>/(n(n &minus; 1)), and 2&sigma;<sup>4</sup>/(n &minus; 1) for normal data). <a href="https://arxiv.org/abs/1809.03774" target="_blank" rel="noopener">https://arxiv.org/abs/1809.03774</a></li>
+        <li class="mb-0 text-break">C. M. Grinstead, J. L. Snell, <em>Introduction to Probability</em>, 2nd revised edition, American Mathematical Society, 1997, chapter 8 (Law of Large Numbers). <a href="https://textbooks.aimath.org/textbooks/approved-textbooks/grinstead-snell/" target="_blank" rel="noopener">https://textbooks.aimath.org/textbooks/approved-textbooks/grinstead-snell/</a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="bg-light border-top py-3 mt-auto">
+    <div class="container text-center text-muted small">
+      &copy; <span id="anno"></span> Vincenzo &middot; Homework
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="script.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      if (typeof init !== "function") {
+        var box = document.createElement("div");
+        box.className = "alert alert-danger m-3";
+        box.textContent = "script.js did not load or contains an error. Open the browser console (F12) for details.";
+        document.body.prepend(box);
+      }
+    });
+  </script>
+</body>
+</html>
