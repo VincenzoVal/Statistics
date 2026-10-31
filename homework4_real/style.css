@@ -1,0 +1,37 @@
+/* Homework 5: page-specific styles */
+
+canvas.chart {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: .375rem;
+}
+
+table.compact td, table.compact th { font-size: .85rem; vertical-align: middle; }
+.select-auto { width: auto; }
+
+/* Equations and code */
+.eq {
+  font-family: "STIX Two Math", "Cambria Math", "Times New Roman", serif;
+  font-size: 1.05rem;
+  background: #f8f9fa;
+  border-left: 3px solid #18bc9c;
+  padding: .45rem .9rem;
+  margin: .45rem 0;
+  overflow-x: auto;
+}
+pre.code {
+  background: #2c3e50;
+  color: #ecf0f1;
+  border-radius: .375rem;
+  padding: .75rem 1rem;
+  font-size: .88rem;
+  overflow-x: auto;
+  margin-bottom: .75rem;
+}
+pre.code .hl { background: rgba(24, 188, 156, .35); }
+.ok { color: #18bc9c; font-weight: 700; }
+.bad { color: #e74c3c; font-weight: 700; }
