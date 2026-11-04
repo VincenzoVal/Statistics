@@ -58,7 +58,7 @@
       </p>
       <div class="eq">M<sub>k</sub> = M<sub>k&minus;1</sub> + (x<sub>k</sub> &minus; M<sub>k&minus;1</sub>) / k</div>
       <p class="mb-0">
-        The new mean is the old mean plus a correction proportional to the &ldquo;surprise&rdquo; &delta;<sub>k</sub> = x<sub>k</sub> &minus; M<sub>k&minus;1</sub>.
+        The new mean is the old mean plus a correction proportional to &delta;<sub>k</sub> = x<sub>k</sub> &minus; M<sub>k&minus;1</sub>, the deviation of the new value from the current mean.
         The same approach, writing the quantity at step k in terms of the quantity at step k &minus; 1 and the new value, is now applied to SS.
       </p>
     </section>
@@ -96,7 +96,7 @@
 
     <section class="mb-5">
       <h3 class="h5">1.4 The code</h3>
-      <p>The core of the algorithm is the three highlighted lines. The variable <code>n</code> counts the values read so far.</p>
+      <p>The code is in JavaScript. The core of the algorithm is the three highlighted lines, and the variable <code>n</code> counts the values read so far.</p>
       <pre class="code"><code>let n = 0, mean = 0, ss = 0;
 for (const x of data) {
   n += 1;
@@ -105,14 +105,6 @@ for (const x of data) {
 <span class="hl">  ss   += d * (x - mean);    // SS_k = SS_(k-1) + (x_k - M_(k-1)) (x_k - M_k)  (Welford)</span>
 }
 const variance = ss / (n - 1);   // sample variance (n &gt;= 2)</code></pre>
-      <p class="small text-muted mb-1">The same algorithm in Python:</p>
-      <pre class="code"><code>n, mean, ss = 0, 0.0, 0.0
-for x in data:
-    n += 1
-    d = x - mean
-    mean += d / n
-    ss += d * (x - mean)
-variance = ss / (n - 1)</code></pre>
       <p class="mb-0">The algorithm is <em>online</em>: it reads each value once, needs only three numbers of memory, and the mean and variance are available after every step.</p>
     </section>
 
@@ -133,10 +125,10 @@ variance = ss / (n - 1)</code></pre>
     </section>
 
     <section class="mb-5">
-      <h3 class="h5">1.6 Why Welford and not the textbook formula?</h3>
+      <h3 class="h5">1.6 Why Welford and not the raw-sums formula?</h3>
       <p>
-        The textbook shortcut variance = (&sum;x&sup2; &minus; (&sum;x)&sup2;/n)/(n &minus; 1) subtracts two huge, almost equal numbers when the data are large compared with their spread,
-        and the cancellation destroys the result (it can even become negative). Welford adds only non-negative increments computed from small differences.
+        The variance can also be computed in one pass from the two running sums &sum;x and &sum;x&sup2;, with variance = (&sum;x&sup2; &minus; (&sum;x)&sup2;/n)/(n &minus; 1) (the &ldquo;raw-sums formula&rdquo;).
+        When the data are large compared with their spread, this formula subtracts two huge, almost equal numbers, and the cancellation destroys the result (it can even become negative). Welford adds only non-negative increments computed from small differences.
         The test below uses 1000 integer values of the form offset + (a random integer from 0 to 10), so that the exact variance can be computed with exact integer arithmetic (BigInt) and used as reference.
       </p>
       <div class="row g-2 align-items-end mb-3">
