@@ -243,13 +243,13 @@ function runStability() {
   };
   $("stabOut").innerHTML = table(["Method", "Computed sample variance", "Relative error"], [
     ["Exact (integer arithmetic)", g(exact, 8), "-"],
-    row("Textbook formula (&sum;x&sup2; &minus; (&sum;x)&sup2;/n)/(n &minus; 1)", naive),
+    row("Raw-sums formula (&sum;x&sup2; &minus; (&sum;x)&sup2;/n)/(n &minus; 1)", naive),
     row("Two-pass (mean first, then deviations; needs all the data in memory)", twoPass),
     row("Welford (one pass, three numbers of memory)", welford),
   ], "compact") +
-    `<p class="small text-muted mt-2 mb-0">The true variance of the 1000 values does not depend on the offset. The textbook formula breaks down once the offset is about 10<sup>9</sup>: it loses all its digits, and for larger offsets it can return a negative variance.
+    `<p class="small text-muted mt-2 mb-0">The true variance of the 1000 values does not depend on the offset. The raw-sums formula breaks down once the offset is about 10<sup>9</sup>: it loses all its digits, and for larger offsets it can return a negative variance.
     Welford keeps many correct digits at the same offsets, using a single pass. The two-pass method is comparable (it can even be a little more accurate for moderate offsets) but it needs the whole data set twice, so it cannot be used on a stream.
-    With these 1000 values and the extreme offset 10<sup>15</sup>, for example, the two-pass result is wrong by a factor of about 3 while Welford is still within 0.2 %, and the textbook formula is meaningless.</p>`;
+    With these 1000 values and the extreme offset 10<sup>15</sup>, for example, the two-pass result is wrong by a factor of about 3 while Welford is still within 0.2 %, and the raw-sums formula is meaningless.</p>`;
 }
 
 /* ---------------------------------------------------------------------
