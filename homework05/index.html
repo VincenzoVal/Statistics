@@ -1,245 +1,419 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Homework 6</title>
+  <title>Statistics - HMWK 6</title>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/css/custom.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
     <div class="container">
-      <span class="navbar-brand brand-statico">Homework</span>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-      <div class="collapse navbar-collapse" id="nav">
+      <span class="navbar-brand brand-statico">Statistics 2026/2027</span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="../homework-01/">Homework 1</a></li>
-          <li class="nav-item"><a class="nav-link" href="../homework-02/">Homework 2</a></li>
-          <li class="nav-item"><a class="nav-link" href="../homework-03/">Homework 3</a></li>
-          <li class="nav-item"><a class="nav-link" href="../homework-04/">Homework 4</a></li>
-          <li class="nav-item"><a class="nav-link" href="../homework-05/">Homework 5</a></li>
-          <li class="nav-item"><a class="nav-link" href="../homework-06/">Homework 6</a></li>
+          <li class="nav-item"><a class="nav-link" href="../">Home</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
   <main class="container py-4">
-    <h1 class="mb-1">HMWK 6 — Riemann vs Lebesgue Integration and the Numerical Normal CDF</h1>
-    <p class="lead text-muted mb-4">Exercise 1: numerical integrals by partitioning the domain and by partitioning the range. Exercise 2: computing the standard normal CDF when its density has no elementary antiderivative.</p>
 
-    <noscript><div class="alert alert-warning">This page needs JavaScript to compute its tables and charts.</div></noscript>
+    <h1 class="mb-1">HMWK 6 &mdash; Riemann vs Lebesgue Integration and the Numerical Normal CDF</h1>
+    <p class="lead text-muted mb-4">Exercise 1: sections 1&ndash;6. Exercise 2: sections 7&ndash;10. Discussion: section 11. Key takeaways: section 12.</p>
+
+    <noscript><div class="alert alert-danger">This page needs JavaScript to compute its tables and charts.</div></noscript>
     <div id="jsError" class="alert alert-danger d-none"></div>
 
     <div class="alert alert-warning">
       <strong>Educational page.</strong> All computations use double-precision floating point and are not a numerical library. The page is public and uses no personal or real data.
     </div>
 
-    <p class="small text-muted">Provenance: the functions, intervals and tasks come from the assignment. Every number in the tables and charts is computed in the browser by <code>script.js</code>, except the reference values in Table 2.2: the 5-decimal values are read from the NIST/SEMATECH table, and the 17-digit values were computed offline with the Python library mpmath at 40-digit precision. The derivations, the choice of methods and the interpretation are original analysis.</p>
-
     <div class="alert alert-info">
       <strong>Interpretation notes.</strong>
-      <ul class="mb-0 small">
-        <li>A preimage measure cannot be computed in closed form for every f. The main Lebesgue-type method therefore estimates it on a fine grid of sample points; a random-point (Monte Carlo) version is shown for comparison, and exact preimage measures are used where they exist in closed form (f1–f6). The grid version is a reordering of a Riemann sum, so the two methods are close by construction.</li>
-        <li>Every double-precision number is a rational number, so the Dirichlet and Thomae functions cannot be evaluated meaningfully at sample points. They are treated through exact arguments and exact finite computations (Section 1.6).</li>
-        <li>Sizes N are odd, so that the jump and the kink at x = 0.5 fall inside a subinterval and not on a partition point. For f5 = 1/√x the integral is improper; the left sum is undefined and the midpoint and right sums are used.</li>
-        <li>For Φ the assignment points to a theory note. The numerical reference is the NIST table (5 decimals), complemented by high-precision values for a comparison to full double precision.</li>
+      <ul class="small mb-0">
+        <li>A preimage measure cannot be computed in closed form for every f. The main Lebesgue-type method therefore estimates it on a fine grid of sample points; a random-point (Monte Carlo) version is shown for comparison, and exact preimage measures are used where they exist in closed form (f1&ndash;f6). The grid version is a reordering of a Riemann sum, so the two methods are close by construction.</li>
+        <li>Every double-precision number is a rational number, so the Dirichlet and Thomae functions cannot be evaluated meaningfully at sample points. They are treated through exact arguments and exact finite computations (section 6).</li>
+        <li>The sizes N are odd, so that the jump and the kink at x = 0.5 fall inside a subinterval and not on a partition point. For f5 = 1/&radic;x the integral is improper; the left sum is undefined, and the midpoint and right sums are used.</li>
+        <li>For &Phi; the assignment points to a theory note. The numerical reference is the NIST table (5 decimals), complemented by high-precision values for a comparison to full double precision.</li>
       </ul>
     </div>
 
-    <div class="card mb-4"><div class="card-body">
-      <div class="row g-2 align-items-end">
-        <div class="col-auto"><label class="form-label mb-0" for="seedInput">Seed (Monte Carlo)</label><input id="seedInput" class="form-control" type="text" value="2026" size="12"></div>
-        <div class="col-auto"><label class="form-label mb-0" for="nSel">N for Tables 1.2 and 1.3</label>
-          <select id="nSel" class="form-select select-auto"><option value="11">11</option><option value="101">101</option><option value="1001" selected>1001</option><option value="10001">10001</option><option value="100001">100001</option></select></div>
-        <div class="col-auto"><button id="btnRun" class="btn btn-primary">Run</button></div>
-        <div class="col-auto"><button id="btnSeed" class="btn btn-outline-primary">New random seed and run</button></div>
-        <div class="col-auto"><button id="btnStop" class="btn btn-outline-secondary">Stop</button></div>
-        <div class="col-auto"><span id="simStatus" class="small text-muted"></span></div>
-      </div>
-      <div id="simError" class="alert alert-danger d-none mt-2 mb-0"></div>
-      <p class="small text-muted mt-2 mb-0">Only the Monte Carlo parts depend on the seed; their values change by about the noise shown in the tables when the seed changes. Everything else is deterministic.</p>
-    </div></div>
-
-    <!-- ===================== EXERCISE 1 ===================== -->
-    <section class="mb-5" id="es1">
-      <h2 class="h4">Exercise 1 — Riemann and Lebesgue integration</h2>
-
-      <h3 class="h5 mt-3">1.1 Test functions</h3>
-      <p>Seven functions come from the assignment (f1–f7); the Dirichlet and Thomae functions are treated in 1.6. For all of f1–f7 the integral is known exactly, so every error below is measured against a true value. For f7 the value is the sine integral Si(π).</p>
+    <!-- ===== 1. TEST FUNCTIONS ===== -->
+    <section class="mb-5">
+      <h2 class="h4">1. Test functions (Exercise 1)</h2>
+      <p>
+        Seven functions come from the assignment (f1&ndash;f7); the Dirichlet and Thomae functions are treated in section 6.
+        For f1&ndash;f7 the integral is known exactly, so every error below is measured against a true value. For f7 the value is the sine integral Si(&pi;).
+      </p>
       <div id="fnTable"></div>
+    </section>
 
-      <h3 class="h5 mt-4">1.2 Riemann-type sums (partition of the domain)</h3>
-      <p>Split [a, b] into n subintervals of length h = (b − a)/n. The left, right and midpoint sums are Σ f(ξ<sub>i</sub>)·h with ξ<sub>i</sub> the left end, right end or midpoint. The lower and upper Darboux sums use the infimum and supremum of f on each subinterval; here they are approximated by the minimum and maximum of three samples per subinterval, which is not exact in general. Values for n = <span id="sumsN"></span>:</p>
+    <!-- ===== 2. RUN ===== -->
+    <section class="mb-5">
+      <h2 class="h4">2. Run the computations</h2>
+      <p>
+        The page computes everything when it loads. Only the Monte Carlo parts depend on the seed, and they change by about the noise shown in section 5 when the seed changes.
+        The size N chosen here is used in the tables of sections 3 and 4. The random numbers come from a small seeded generator (mulberry32).
+      </p>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+              <label for="nSel" class="form-label">Size N for sections 3 and 4</label>
+              <select id="nSel" class="form-select">
+                <option value="11">11</option>
+                <option value="101">101</option>
+                <option value="1001" selected>1001</option>
+                <option value="10001">10001</option>
+                <option value="100001">100001</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="seedInput" class="form-label">Seed</label>
+              <input id="seedInput" type="number" class="form-control" value="2026" step="1">
+            </div>
+            <div class="col-auto"><button id="btnRun" type="button" class="btn btn-primary">Run</button></div>
+            <div class="col-auto"><button id="btnSeed" type="button" class="btn btn-outline-secondary">New random seed and run</button></div>
+            <div class="col-auto small text-muted" id="simStatus"></div>
+          </div>
+          <div id="simError" class="text-danger small mt-2 d-none"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3. RIEMANN ===== -->
+    <section class="mb-5">
+      <h2 class="h4">3. Riemann-type sums (partition of the domain)</h2>
+      <p>
+        Split [a, b] into n subintervals of length h = (b &minus; a)/n. The left, right and midpoint sums are &Sigma; f(&xi;<sub>i</sub>)&middot;h, with &xi;<sub>i</sub> the left end, the right end or the midpoint of each subinterval.
+        The lower and upper Darboux sums use the infimum and the supremum of f on each subinterval; here they are approximated by the minimum and the maximum of three samples per subinterval, which is not exact in general.
+        Values for n = <span id="sumsN"></span>:
+      </p>
       <div id="riemannTable"></div>
-      <p class="small text-muted mt-1">∞ marks a sum that is infinite because f5 is unbounded at x = 0.</p>
+      <p class="small text-muted mt-2 mb-0">&infin; marks a sum that is infinite because f5 is unbounded at x = 0.</p>
+    </section>
 
-      <h3 class="h5 mt-4">1.3 Lebesgue-type sums (partition of the range)</h3>
-      <p>Split the range [m, M] of f into K equal levels y<sub>k</sub> = m + kΔ and let E<sub>k</sub> = f<sup>−1</sup>([y<sub>k</sub>, y<sub>k+1</sub>)). The lower and upper Lebesgue sums are Σ y<sub>k</sub> μ(E<sub>k</sub>) and Σ y<sub>k+1</sub> μ(E<sub>k</sub>); they are integrals of simple functions below and above f. Here K = N.</p>
-      <ul class="small">
-        <li><strong>Grid:</strong> μ(E<sub>k</sub>) is estimated as (b − a)·(number of the N midpoints with f in E<sub>k</sub>)/N, and [m, M] is the range of the sampled values.</li>
-        <li><strong>Exact preimages</strong> (no sampling): f1: μ(E<sub>k</sub>) = 2(arcsin y<sub>k+1</sub> − arcsin y<sub>k</sub>); f2: √y<sub>k+1</sub> − √y<sub>k</sub>; f4: 2(y<sub>k+1</sub> − y<sub>k</sub>) on the range [0, 1/2]; f3 and f6: two level sets of measure 1/2; f5: y<sub>k</sub><sup>−2</sup> − y<sub>k+1</sub><sup>−2</sup> on levels from 1 to √K, plus a tail bin [√K, ∞) of measure 1/K (no upper sum exists for this truncation); f7: no closed form, because the inverse of sin(x)/x is not elementary.</li>
+    <!-- ===== 4. LEBESGUE ===== -->
+    <section class="mb-5">
+      <h2 class="h4">4. Lebesgue-type sums (partition of the range)</h2>
+      <p>
+        Split the range [m, M] of f into K equal levels y<sub>k</sub> = m + k&Delta; and let E<sub>k</sub> = f<sup>&minus;1</sup>([y<sub>k</sub>, y<sub>k+1</sub>)).
+        The lower and upper Lebesgue sums are &Sigma; y<sub>k</sub> &mu;(E<sub>k</sub>) and &Sigma; y<sub>k+1</sub> &mu;(E<sub>k</sub>): they are integrals of simple functions below and above f. Here K = N.
+      </p>
+      <ul>
+        <li><strong>Grid.</strong> &mu;(E<sub>k</sub>) is estimated as (b &minus; a) times the number of the N midpoints with f in E<sub>k</sub>, divided by N, and [m, M] is the range of the sampled values.</li>
+        <li><strong>Exact preimages</strong> (no sampling). f1: &mu;(E<sub>k</sub>) = 2(arcsin y<sub>k+1</sub> &minus; arcsin y<sub>k</sub>). f2: &radic;y<sub>k+1</sub> &minus; &radic;y<sub>k</sub>. f4: 2(y<sub>k+1</sub> &minus; y<sub>k</sub>) on the range [0, 1/2]. f3 and f6: two level sets of measure 1/2. f5: y<sub>k</sub><sup>&minus;2</sup> &minus; y<sub>k+1</sub><sup>&minus;2</sup> on levels from 1 to &radic;K, plus a tail bin [&radic;K, &infin;) of measure 1/K (no upper sum exists for this truncation). f7: no closed form, because the inverse of sin(x)/x is not elementary.</li>
       </ul>
       <div id="lebTable"></div>
-      <p class="small text-muted mt-1">Same N as in 1.2. The bounds on the grid bracket the sampled sum, not exactly the integral.</p>
+      <p class="small text-muted mt-2 mb-0">Same N as in section 3. The grid bounds bracket the sampled sum, not exactly the integral.</p>
+    </section>
 
-      <h3 class="h5 mt-4">1.4 Comparison: accuracy, convergence, efficiency</h3>
-      <h4 class="h6">Errors at N = 10001 and observed convergence order</h4>
-      <p class="small">R = Riemann midpoint; L grid = midpoint of the grid bounds; L exact = lower sum with exact preimages (K = N). The order is the slope of log|error| against log N between N = 1001 and N = 100001. "≈ roundoff" means the error there is below 10<sup>−12</sup>.</p>
-      <div id="convTable"></div>
+    <!-- ===== 5. COMPARISON ===== -->
+    <section class="mb-5">
+      <h2 class="h4">5. Comparison: accuracy, convergence, efficiency</h2>
+      <p>
+        R is the Riemann midpoint sum, L grid the midpoint of the grid bounds, L exact the lower sum with exact preimages (K = N).
+        The order is the slope of log|error| against log N between N = 1001 and N = 100001; &ldquo;&asymp; roundoff&rdquo; means that the error there is below 10<sup>&minus;12</sup>. Errors at N = 10001:
+      </p>
+      <div id="convTable" class="mb-3"></div>
 
-      <div class="row g-3 mt-2">
-        <div class="col-lg-6"><canvas id="cvRiemann" class="chart"></canvas><div id="lgRiemann" class="legend"></div></div>
-        <div class="col-lg-6"><canvas id="cvLeb" class="chart"></canvas><div id="lgLeb" class="legend"></div></div>
-        <div class="col-lg-6"><canvas id="cvF1" class="chart"></canvas><div id="lgF1" class="legend"></div></div>
-        <div class="col-lg-6"><canvas id="cvF5" class="chart"></canvas><div id="lgF5" class="legend"></div></div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvRiemann" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>Riemann midpoint sums.</strong> The continuous functions f1, f2, f4 and f7 fall steeply; the jump functions f3 and f6 and the singular f5 fall slowly. Zero errors do not appear on a logarithmic axis.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvLeb" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>Lebesgue grid sums.</strong> On f1, f2 and f7 the curves lie above the midpoint curves and fall more slowly; f4, the jump functions and f5 behave as for Riemann.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvF1" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>f1 = sin(x).</strong> The midpoint rule is the most accurate; the lower sum with exact preimages falls like 1/N; the Monte Carlo curve is a single run and fluctuates.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvF5" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>f5 = 1/&radic;x.</strong> All the methods converge slowly because of the unbounded singularity at 0; the Monte Carlo curve is erratic because the variance of f5 is infinite.
+          </p>
+        </div>
       </div>
-      <p class="small text-muted mt-1">Zero errors do not appear on logarithmic axes. The Monte Carlo curves are a single run and fluctuate.</p>
 
-      <h4 class="h6 mt-3">Monte Carlo version of the Lebesgue sum</h4>
-      <p class="small">The measure of each preimage is estimated by the fraction of N uniform random points that fall in it. The expected noise is σ(b − a)/√N, with σ the sample standard deviation of f; the actual error is typically of the same order.</p>
-      <div id="mcTable"></div>
+      <h3 class="h6 mt-3">Monte Carlo version of the Lebesgue sum</h3>
+      <p class="small">
+        The measure of each preimage is estimated by the fraction of N uniform random points that fall in it. The expected noise is &sigma;(b &minus; a)/&radic;N, with &sigma; the sample standard deviation of f; the actual error is typically of the same order.
+      </p>
+      <div id="mcTable" class="mb-3"></div>
 
-      <h4 class="h6 mt-3">Cost for f1 at N = K = 1,000,000</h4>
+      <h3 class="h6 mt-3">Cost for f1 at N = K = 1,000,000</h3>
       <div id="effTable"></div>
-      <p class="small text-muted mt-1">Times depend on the machine and the browser; only their ratios are meaningful.</p>
+      <p class="small text-muted mt-2">Times depend on the machine and the browser; only their ratios are meaningful.</p>
+    </section>
 
-      <h4 class="h6 mt-3">Discussion</h4>
-      <p><strong>Accuracy and convergence.</strong> For smooth functions the midpoint rule is the most accurate at equal N, with error decreasing about like N<sup>−2</sup>. The Lebesgue grid sum adds a quantization error from the finite number of levels and decreases more slowly. The lower sum with exact preimages is a one-sided bound whose error decreases about like K<sup>−1</sup>, because each point is rounded down to a level. For the step functions f3 and f6 the Riemann error decreases only like N<sup>−1</sup>, since one subinterval always straddles the jump. With exact preimages the Lebesgue sum is exact with two level sets, whatever the position of the jump: its cost depends on the number of values taken by f, not on how irregular f is in x. For f5 all methods converge slowly, at a rate close to N<sup>−1/2</sup>, because of the unbounded singularity.</p>
-      <p><strong>Efficiency.</strong> The midpoint sum needs N evaluations and no storage. The grid version needs the same evaluations plus an array of values and a histogram pass. The exact-preimage version needs no evaluation of f, but only works when the preimages are known analytically, which is rare. The Monte Carlo version converges like N<sup>−1/2</sup> regardless of smoothness, which is far slower than the deterministic sums on these one-dimensional problems; its advantage appears in high dimension, which is not tested here.</p>
+    <!-- ===== 6. DIFFERENT BEHAVIOUR ===== -->
+    <section class="mb-5">
+      <h2 class="h4">6. Functions on which the approaches behave differently</h2>
 
-      <h3 class="h5 mt-4">1.5 Discussion: do the two approaches converge to the same value?</h3>
-      <p>For a Riemann-integrable function the Lebesgue integral exists and equals the Riemann integral. This is a theorem, and the tables are consistent with it: for f1–f4, f6 and f7 the Riemann and Lebesgue sums approach the same exact value as N grows, the Monte Carlo estimates agree with it to within a few times their noise, and the column |R − L grid| in 1.4 is of the size of the larger of the two discretization errors. What differs is the path to the limit: the Riemann sums are indexed by the fineness of a partition of the domain, the Lebesgue sums by the fineness of a partition of the range, so their errors have different sources (variation of f within a subinterval for Riemann, level spacing and preimage measure for Lebesgue). For f5 the Riemann integral exists only as an improper integral, the limit of integrals over [ε, 1]; the Lebesgue integral of this non-negative function is the supremum over simple functions below it. Both equal 2, and the sums above approach it slowly from below or around it.</p>
+      <h3 class="h5">Dirichlet function: 1 on the rationals, 0 on the irrationals, on [0, 1]</h3>
+      <p>
+        Every subinterval of every partition contains both rationals and irrationals, because both sets are dense. The supremum is then 1 and the infimum is 0 on every subinterval,
+        so the upper sum is 1 and the lower sum is 0 for every partition: the Riemann integral does not exist.
+        For the Lebesgue integral the level set {f = 1} is the set of rationals in [0, 1], which is countable and has measure 0, so the integral is 1&middot;0 + 0&middot;1 = 0.
+      </p>
+      <div id="dirTable" class="mb-2"></div>
+      <p class="small text-muted">
+        The values are computed from the rule above, not by evaluating f. A program cannot evaluate f at sample points: of 1000 pseudo-random draws, <span id="dyadic"></span> are dyadic rationals (multiples of 2<sup>&minus;32</sup>), and every double-precision number is a rational number.
+        Riemann sums with machine sample points therefore see f &equiv; 1 and give 1, which is an artifact of the sample points and not the value of any integral.
+      </p>
 
-      <h3 class="h5 mt-4">1.6 Functions on which the approaches behave differently</h3>
-      <h4 class="h6">Dirichlet function: 1 on the rationals, 0 on the irrationals, on [0, 1]</h4>
-      <p>Every subinterval of every partition contains both rationals and irrationals, because both sets are dense. The supremum is then 1 and the infimum is 0 on every subinterval, so the upper sum is 1 and the lower sum is 0 for every partition: the Riemann integral does not exist. For the Lebesgue integral the level set {f = 1} is the set of rationals in [0, 1], which is countable and has measure 0, so the integral is 1·0 + 0·1 = 0.</p>
-      <div id="dirTable"></div>
-      <p class="small mt-1">The values are computed from the rule above, not by evaluating f. A program cannot evaluate f at sample points: of 1000 pseudo-random draws, <span id="dyadic"></span> are dyadic rationals (multiples of 2<sup>−32</sup>), and every double-precision number is a rational number. Riemann sums with machine sample points therefore see f ≡ 1 and give 1, an artifact of the sample points and not the value of any integral.</p>
-
-      <h4 class="h6 mt-3">Thomae function: 1/q at x = p/q in lowest terms, 0 at irrationals</h4>
-      <p>Thomae's function is Riemann integrable with integral 0, because it is bounded and continuous except on the rationals, a set of measure 0. The lower sums are 0 since every subinterval contains irrationals. The upper sum for n equal subintervals is exact: the supremum on [i/n, (i+1)/n] is 1/q, with q the smallest denominator of a fraction in that interval. The Lebesgue view explains the limit: each level set {f ≥ 1/k} is finite, so it has measure 0, and the integral of a non-negative function with such level sets is 0.</p>
-      <div class="row g-3">
+      <h3 class="h5 mt-4">Thomae function: 1/q at x = p/q in lowest terms, 0 at the irrationals</h3>
+      <p>
+        Thomae&rsquo;s function is Riemann integrable with integral 0, because it is bounded and continuous except on the rationals, a set of measure 0.
+        The lower sums are 0 since every subinterval contains irrationals.
+        The upper sum for n equal subintervals is exact: the supremum on [i/n, (i+1)/n] is 1/q, with q the smallest denominator of a fraction in that interval.
+        The Lebesgue view explains the limit: each level set {f &ge; 1/k} is finite, so it has measure 0, and the integral of a non-negative function with such level sets is 0.
+      </p>
+      <div class="row g-3 mb-2">
         <div class="col-lg-6"><div id="thomaeTable"></div></div>
         <div class="col-lg-6"><div id="thomaeLevels"></div></div>
       </div>
-      <p class="small mt-1">The number of points in {f ≥ 1/k} is 1 + φ(1) + … + φ(k), with φ Euler's totient; the extra point accounts for both 0 and 1 being counted by q = 1. The upper sums decrease slowly towards 0 as n grows, while the Lebesgue computation gives 0 at once.</p>
-
-      <h4 class="h6 mt-3">Other cases already visible above</h4>
-      <p>The step functions f3 and f6 show the Riemann error decaying like 1/N while the Lebesgue sum with exact preimages is exact; f5 shows a Riemann integral that needs a limit, handled by truncating the range in the Lebesgue sum.</p>
-
-      <div class="card mb-3"><div class="card-body">
-        <h4 class="h6">Key takeaways — Exercise 1</h4>
-        <ul class="mb-0">
-          <li>On Riemann-integrable functions both definitions give the same value, and the numerical sums approach it.</li>
-          <li>On smooth functions the midpoint rule is more accurate and cheaper than any Lebesgue-type sum computed from samples.</li>
-          <li>The Lebesgue approach is most useful where the structure of f is simple in its values and not in x (step functions), and where the Riemann integral fails (Dirichlet) or needs a limit (1/√x).</li>
-          <li>Monte Carlo noise is of the order σ(b − a)/√N and does not depend on the smoothness of f.</li>
-        </ul>
-      </div></div>
+      <p class="small text-muted">
+        The number of points in {f &ge; 1/k} is 1 + &phi;(1) + &hellip; + &phi;(k), with &phi; Euler&rsquo;s totient; the extra point accounts for both 0 and 1 having q = 1.
+        The upper sums decrease slowly towards 0 as n grows, while the Lebesgue computation gives 0 at once.
+      </p>
     </section>
 
-    <!-- ===================== EXERCISE 2 ===================== -->
-    <section class="mb-5" id="es2">
-      <h2 class="h4">Exercise 2 — Numerical computation of the normal CDF</h2>
-
-      <h3 class="h5 mt-3">2.1 Method</h3>
-      <p>The standard normal CDF is Φ(x) = ∫<sub>−∞</sub><sup>x</sup> φ(u) du with φ(u) = e<sup>−u²/2</sup>/√(2π). By symmetry and the substitution u = √2·s:</p>
-      <div class="eq">Φ(x) = ½ + (1/√(2π)) ∫<sub>0</sub><sup>x</sup> e<sup>−u²/2</sup> du = ½ + (1/√π) ∫<sub>0</sub><sup>x/√2</sup> e<sup>−s²</sup> ds = ½ [1 + erf(x/√2)] = ½ erfc(−x/√2)</div>
-      <p>so it suffices to compute erf and erfc, with t = |x|/√2. Two representations are used, each where it is accurate:</p>
+    <!-- ===== 7. METHOD ===== -->
+    <section class="mb-5">
+      <h2 class="h4">7. The method for the normal CDF (Exercise 2)</h2>
+      <p>
+        The standard normal CDF is &Phi;(x) = &int;<sub>&minus;&infin;</sub><sup>x</sup> &phi;(u) du with &phi;(u) = e<sup>&minus;u&sup2;/2</sup>/&radic;(2&pi;).
+        By symmetry and the substitution u = &radic;2&middot;s:
+      </p>
+      <div class="eq">&Phi;(x) = &frac12; + (1/&radic;(2&pi;)) &int;<sub>0</sub><sup>x</sup> e<sup>&minus;u&sup2;/2</sup> du = &frac12; + (1/&radic;&pi;) &int;<sub>0</sub><sup>x/&radic;2</sup> e<sup>&minus;s&sup2;</sup> ds = &frac12; [1 + erf(x/&radic;2)] = &frac12; erfc(&minus;x/&radic;2)</div>
+      <p>So it is enough to compute erf and erfc, with t = |x|/&radic;2. Two representations are used, each where it is accurate.</p>
       <ul>
-        <li><strong>Series for t &lt; 2.</strong> Integrating the Maclaurin series of e<sup>−s²</sup> gives an alternating series, which loses digits through cancellation when t is not small. A series with positive terms avoids this. Let y(t) = e<sup>t²</sup>∫<sub>0</sub><sup>t</sup> e<sup>−s²</sup> ds. Then y′ = 1 + 2ty, y(0) = 0. Writing y = Σ c<sub>n</sub>t<sup>2n+1</sup> gives c<sub>0</sub> = 1 and (2n+1)c<sub>n</sub> = 2c<sub>n−1</sub>, hence
-          <div class="eq">erf(t) = (2/√π) e<sup>−t²</sup> Σ<sub>n≥0</sub> 2<sup>n</sup> t<sup>2n+1</sup> / (1·3·5···(2n+1))</div>
-          All terms are positive and the series converges for every t.</li>
-        <li><strong>Continued fraction for t ≥ 2.</strong> In the tails 1 − Φ is tiny, and computing it as 1 − erf loses all relative accuracy. The continued fraction in DLMF 7.9.2,
-          <div class="eq">√π e<sup>t²</sup> erfc(t) = 2t / (2t²+1 − (1·2)/(2t²+5 − (3·4)/(2t²+9 − ···)))</div>
-          converges quickly for t ≥ 2 and is evaluated with the modified Lentz method, stopping when a correction is below 10<sup>−16</sup>.</li>
-        <li><strong>Negative arguments:</strong> Φ(−x) is the upper tail ½ erfc(x/√2), computed directly, not as 1 − Φ(x).</li>
+        <li>
+          <strong>Series for t &lt; 2.</strong> Integrating the Maclaurin series of e<sup>&minus;s&sup2;</sup> gives an alternating series, which loses digits through cancellation when t is not small. A series with positive terms avoids this.
+          Let y(t) = e<sup>t&sup2;</sup> &int;<sub>0</sub><sup>t</sup> e<sup>&minus;s&sup2;</sup> ds. Then y&prime; = 1 + 2ty and y(0) = 0. Writing y = &Sigma; c<sub>n</sub> t<sup>2n+1</sup> gives c<sub>0</sub> = 1 and (2n+1) c<sub>n</sub> = 2 c<sub>n&minus;1</sub>, hence
+          <div class="eq">erf(t) = (2/&radic;&pi;) e<sup>&minus;t&sup2;</sup> &Sigma;<sub>n&ge;0</sub> 2<sup>n</sup> t<sup>2n+1</sup> / (1&middot;3&middot;5&middot;&hellip;&middot;(2n+1))</div>
+          All the terms are positive and the series converges for every t.
+        </li>
+        <li>
+          <strong>Continued fraction for t &ge; 2.</strong> In the tails 1 &minus; &Phi; is tiny, and computing it as 1 &minus; erf loses all relative accuracy. The continued fraction in DLMF 7.9.2,
+          <div class="eq">&radic;&pi; e<sup>t&sup2;</sup> erfc(t) = 2t / (2t&sup2;+1 &minus; (1&middot;2)/(2t&sup2;+5 &minus; (3&middot;4)/(2t&sup2;+9 &minus; &hellip;)))</div>
+          converges quickly for t &ge; 2. It is evaluated with the modified Lentz method and stopped when a correction is below 10<sup>&minus;16</sup>.
+        </li>
+        <li><strong>Negative arguments.</strong> &Phi;(&minus;x) is the upper tail &frac12; erfc(x/&radic;2), computed directly and not as 1 &minus; &Phi;(x).</li>
       </ul>
-
-      <h3 class="h5 mt-4">2.2 Comparison with a trusted reference</h3>
-      <p class="small">The NIST/SEMATECH table lists the area between 0 and x to 5 decimals; Φ(x) is that area plus 0.5, and for negative x NIST uses Φ(−x) = 1 − Φ(x). Rows without a NIST value are tail points; there the comparison uses the 17-digit reference computed offline with mpmath.</p>
-      <div id="refTable"></div>
-
-      <h3 class="h5 mt-4">2.3 Accuracy and cost</h3>
-      <div class="row g-3">
-        <div class="col-lg-6"><h4 class="h6">Series: error against the number of terms</h4><div id="serTable"></div></div>
-        <div class="col-lg-6"><h4 class="h6">Continued fraction: error against the number of iterations (upper tail)</h4><div id="cfTable"></div></div>
-      </div>
-      <div class="row g-3 mt-1">
-        <div class="col-lg-6"><canvas id="cvSer" class="chart"></canvas><div id="lgSer" class="legend"></div></div>
-        <div class="col-lg-6"><canvas id="cvTrap" class="chart"></canvas><div id="lgTrap" class="legend"></div></div>
-      </div>
-      <h4 class="h6 mt-3">Cost per evaluation of Φ(x)</h4>
-      <div id="costTable"></div>
-      <p class="small text-muted mt-1">Timing over 200,000 points in [−6, 6] (5,000 points for the quadrature rules); machine dependent. Work counts are the maxima over that grid.</p>
-      <p class="small" id="checkOut"></p>
-      <h4 class="h6">Discussion</h4>
-      <p>The series with positive terms reaches full double precision with a number of terms that grows with t, because the terms first increase before decreasing; the continued fraction needs fewer iterations as t grows, which is why the two representations are complementary. Both cost a few dozen floating-point operations per evaluation, far less than quadrature, which needs one density evaluation per subinterval. Trapezoid and Simpson errors decrease algebraically with n, then stop at the roundoff level.</p>
-
-      <h3 class="h5 mt-4">2.4 Discussion: why Φ is not an elementary function (Liouville)</h3>
-      <p>An elementary function is one built from rational functions, exponentials and logarithms (hence also roots, trigonometric functions and their inverses) by finitely many sums, products, quotients and compositions. Φ is the antiderivative of φ that vanishes at −∞, so the question is whether e<sup>−x²/2</sup> has an elementary antiderivative.</p>
-      <p><strong>Theorem (Liouville).</strong> Let f and g be rational functions with g non-constant. Then f·e<sup>g</sup> has an elementary antiderivative if and only if there is a rational function r with</p>
-      <div class="eq">r′ + g′ r = f, and then ∫ f e<sup>g</sup> dx = r e<sup>g</sup> + C.</div>
-      <p><strong>Application.</strong> Take f = 1 and g = −x²/2, so g′ = −x. An elementary antiderivative exists only if some rational r satisfies r′ − x r = 1. None does:</p>
-      <ol>
-        <li>Suppose r has a pole of order m ≥ 1 at some point x<sub>0</sub>. Then r′ has a pole of order m + 1 there, while x r has a pole of order at most m. So r′ − x r has a pole of order m + 1 ≥ 2 at x<sub>0</sub> and cannot equal 1.</li>
-        <li>Hence r is a polynomial. If r = 0, then r′ − x r = 0 ≠ 1. If deg r = d ≥ 0, then deg(x r) = d + 1 and deg r′ ≤ d − 1, so deg(r′ − x r) = d + 1 ≥ 1, and the polynomial r′ − x r cannot be the constant 1.</li>
-      </ol>
-      <p>So e<sup>−x²/2</sup> has no elementary antiderivative, and Φ is not an elementary function. The proof of the theorem itself is not reproduced here; the argument above is complete once the theorem is accepted. Note that the definite integral over the whole line is elementary: ∫<sub>−∞</sub><sup>∞</sup> φ = 1, obtained by a two-dimensional trick in polar coordinates, not by an antiderivative. The non-existence concerns the antiderivative as a function of x.</p>
-
-      <h3 class="h5 mt-4">2.5 Discussion: erf as an exact representation, and why numerical methods remain necessary</h3>
-      <p>The error function is defined by erf(t) = (2/√π)∫<sub>0</sub><sup>t</sup> e<sup>−s²</sup> ds. This adds a new named function to the repertoire, and the formula in 2.1 then expresses Φ exactly: Φ(x) = ½[1 + erf(x/√2)]. It is an exact analytical representation, but not a closed form in elementary functions, which is what Liouville's theorem excludes. Naming a function does not compute it. A numerical value still requires an algorithm, and each natural choice has a limitation: the defining integral needs quadrature; the Maclaurin series converges for every t but, in its alternating form, loses accuracy through cancellation as t grows (shown in 2.6); the asymptotic series and the continued fraction are accurate in the tails and poor near zero; and fixed rational approximations such as A&amp;S 7.1.26 are fast but limited to a few digits. A practical implementation therefore combines representations, as in 2.1.</p>
-
-      <h3 class="h5 mt-4">2.6 The three approaches compared</h3>
-      <p class="small">Absolute error of Φ(x) against the high-precision reference, for the three families in the assignment: numerical integration (trapezoid, Simpson), series expansion of erf, and approximations through erf (hybrid and A&amp;S 7.1.26).</p>
-      <div id="cmpTable"></div>
-      <h4 class="h6 mt-3">Extra: loss of precision in the upper tail</h4>
-      <p class="small">Relative error of Q(x) = 1 − Φ(x) when computed by subtraction and when computed directly from erfc.</p>
-      <div id="tailTable"></div>
-      <h4 class="h6 mt-3">Discussion</h4>
-      <p>Quadrature is the simplest to write and needs no special function, but its cost grows with the accuracy required. The alternating Maclaurin series is accurate for small x and breaks down for large x, since the terms grow to a large size before cancelling; the positive-term form removes this. The A&amp;S approximation is the cheapest and is accurate only to about 10<sup>−7</sup>. In the upper tail the relative error of the subtraction 1 − Φ(x) grows rapidly with x, because an absolute error of about 10<sup>−16</sup> is divided by an ever smaller Q(x), while the continued fraction keeps a relative error close to roundoff.</p>
-
-      <div class="card mb-3"><div class="card-body">
-        <h4 class="h6">Key takeaways — Exercise 2</h4>
-        <ul class="mb-0">
-          <li>Φ(x) = ½[1 + erf(x/√2)] is exact but not elementary: Liouville's theorem rules out an elementary antiderivative of e<sup>−x²/2</sup>.</li>
-          <li>Accurate evaluation uses different representations in different regions: a positive-term series near the centre, a continued fraction in the tails, and symmetry for negative x.</li>
-          <li>The implementation agrees with the NIST table to its 5 decimals and with a high-precision reference to about 10<sup>−14</sup> relative error or better in these tests.</li>
-          <li>In the upper tail, compute Q(x) directly; 1 − Φ(x) cancels.</li>
-        </ul>
-      </div></div>
     </section>
 
-    <!-- ===================== REFERENCES ===================== -->
-    <section class="mb-5" id="references">
+    <!-- ===== 8. REFERENCE ===== -->
+    <section class="mb-5">
+      <h2 class="h4">8. Comparison with a trusted reference</h2>
+      <p>
+        The NIST/SEMATECH table lists the area between 0 and x to 5 decimals; &Phi;(x) is that area plus 0.5, and for negative x NIST uses &Phi;(&minus;x) = 1 &minus; &Phi;(x).
+        The rows without a NIST value are tail points, where the comparison uses the 17-digit reference computed offline with mpmath.
+      </p>
+      <div id="refTable"></div>
+    </section>
+
+    <!-- ===== 9. ACCURACY AND COST ===== -->
+    <section class="mb-5">
+      <h2 class="h4">9. Accuracy and cost</h2>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <h3 class="h6">Series: error against the number of terms</h3>
+          <div id="serTable"></div>
+        </div>
+        <div class="col-lg-6">
+          <h3 class="h6">Continued fraction: error against the number of iterations (upper tail)</h3>
+          <div id="cfTable"></div>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvSer" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>Series and continued fraction.</strong> The series error falls until it reaches roundoff, and larger x needs more terms; the continued fraction needs fewer iterations as x grows.
+          </p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvTrap" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0">
+            <strong>Quadrature of the density.</strong> The errors of the trapezoid and Simpson rules decrease with n down to the roundoff level.
+          </p>
+        </div>
+      </div>
+      <h3 class="h6 mt-3">Cost per evaluation of &Phi;(x)</h3>
+      <div id="costTable"></div>
+      <p class="small text-muted mt-2">Timing over 200,000 points in [&minus;6, 6] (5,000 points for the quadrature rules); machine dependent. Work counts are the maxima over that grid.</p>
+      <p class="small" id="checkOut"></p>
+    </section>
+
+    <!-- ===== 10. APPROACHES ===== -->
+    <section class="mb-5">
+      <h2 class="h4">10. The three approaches compared</h2>
+      <p>
+        Absolute error of &Phi;(x) against the high-precision reference, for the three families in the assignment: numerical integration (trapezoid, Simpson), series expansion of erf,
+        and approximations through erf (the hybrid of section 7 and A&amp;S 7.1.26).
+      </p>
+      <div id="cmpTable" class="mb-3"></div>
+      <h3 class="h6 mt-3">Extra: loss of precision in the upper tail</h3>
+      <p class="small">Relative error of Q(x) = 1 &minus; &Phi;(x) when computed by subtraction and when computed directly from erfc.</p>
+      <div id="tailTable" class="mb-3"></div>
+    </section>
+
+    <!-- ===== 11. DISCUSSION ===== -->
+    <section class="mb-5">
+      <h2 class="h4">11. Discussion</h2>
+
+      <h3 class="h5">Exercise 1: accuracy, convergence and efficiency</h3>
+      <p>
+        <strong>Accuracy and convergence.</strong> For smooth functions the midpoint rule is the most accurate at equal N, with an error that decreases about like N<sup>&minus;2</sup>.
+        The Lebesgue grid sum adds a quantization error from the finite number of levels, and decreases more slowly.
+        The lower sum with exact preimages is a one-sided bound whose error decreases about like K<sup>&minus;1</sup>, because each point is rounded down to a level.
+        For the step functions f3 and f6 the Riemann error decreases only like N<sup>&minus;1</sup>, since one subinterval always straddles the jump.
+        With exact preimages the Lebesgue sum is exact with two level sets, wherever the jump is: its cost depends on the number of values taken by f, not on how irregular f is in x.
+        For f5 all methods converge slowly, at a rate close to N<sup>&minus;1/2</sup>, because of the unbounded singularity.
+      </p>
+      <p>
+        <strong>Efficiency.</strong> The midpoint sum needs N evaluations and no storage. The grid version needs the same evaluations plus an array of values and a histogram pass.
+        The exact-preimage version needs no evaluation of f, but it works only when the preimages are known analytically, which is rare.
+        The Monte Carlo version converges like N<sup>&minus;1/2</sup> whatever the smoothness, which is far slower than the deterministic sums on these one-dimensional problems; its advantage appears in high dimension, which is not tested here.
+      </p>
+
+      <h3 class="h5 mt-4">Exercise 1: do the two approaches converge to the same value?</h3>
+      <p>
+        For a Riemann-integrable function the Lebesgue integral exists and equals the Riemann integral. This is a theorem, and the tables of section 5 are consistent with it:
+        for f1&ndash;f4, f6 and f7 the Riemann and Lebesgue sums approach the same exact value as N grows, the Monte Carlo estimates agree with it to within a few times their noise,
+        and the column |R &minus; L grid| is of the size of the larger of the two discretization errors.
+      </p>
+      <p>
+        What differs is the path to the limit. The Riemann sums are indexed by the fineness of a partition of the domain, the Lebesgue sums by the fineness of a partition of the range,
+        so their errors have different sources: the variation of f within a subinterval for Riemann, the level spacing and the preimage measure for Lebesgue.
+        For f5 the Riemann integral exists only as an improper integral, the limit of the integrals over [&epsilon;, 1]; the Lebesgue integral of this non-negative function is the supremum over the simple functions below it.
+        Both equal 2, and the sums approach it slowly.
+      </p>
+
+      <h3 class="h5 mt-4">Exercise 1: where the approaches differ</h3>
+      <p>
+        The Dirichlet function has no Riemann integral and a Lebesgue integral equal to 0; the Thomae function has both, equal to 0, and its upper Darboux sums approach 0 slowly while the Lebesgue computation gives 0 at once (section 6).
+        The step functions f3 and f6 show a Riemann error that decays like 1/N, while the Lebesgue sum with exact preimages is exact; f5 shows a Riemann integral that needs a limit, handled in the Lebesgue sum by truncating the range.
+      </p>
+
+      <h3 class="h5 mt-4">Exercise 2: accuracy and cost</h3>
+      <p>
+        The series with positive terms reaches full double precision with a number of terms that grows with t, because the terms first increase before decreasing; the continued fraction needs fewer iterations as t grows, which is why the two representations are complementary.
+        Both cost a few dozen floating-point operations per evaluation, far less than quadrature, which needs one density evaluation per subinterval.
+        The trapezoid and Simpson errors decrease algebraically with n and then stop at the roundoff level.
+      </p>
+
+      <h3 class="h5 mt-4">Exercise 2: why the normal CDF is not an elementary function (Liouville)</h3>
+      <p>
+        An elementary function is one built from rational functions, exponentials and logarithms (hence also roots, trigonometric functions and their inverses) by finitely many sums, products, quotients and compositions.
+        &Phi; is the antiderivative of &phi; that vanishes at &minus;&infin;, so the question is whether e<sup>&minus;x&sup2;/2</sup> has an elementary antiderivative.
+      </p>
+      <p><strong>Theorem (Liouville).</strong> Let f and g be rational functions, with g non-constant. Then f&middot;e<sup>g</sup> has an elementary antiderivative if and only if there is a rational function r such that</p>
+      <div class="eq">r&prime; + g&prime; r = f, and then &int; f e<sup>g</sup> dx = r e<sup>g</sup> + C.</div>
+      <p><strong>Application.</strong> Take f = 1 and g = &minus;x&sup2;/2, so g&prime; = &minus;x. An elementary antiderivative exists only if some rational r satisfies r&prime; &minus; x r = 1. None does:</p>
+      <ol>
+        <li>Suppose r has a pole of order m &ge; 1 at some point x<sub>0</sub>. Then r&prime; has a pole of order m + 1 there, while x r has a pole of order at most m. So r&prime; &minus; x r has a pole of order m + 1 &ge; 2 at x<sub>0</sub> and cannot equal 1.</li>
+        <li>Hence r is a polynomial. If r = 0, then r&prime; &minus; x r = 0 &ne; 1. If deg r = d &ge; 0, then deg(x r) = d + 1 and deg r&prime; &le; d &minus; 1, so deg(r&prime; &minus; x r) = d + 1 &ge; 1, and the polynomial r&prime; &minus; x r cannot be the constant 1.</li>
+      </ol>
+      <p>
+        So e<sup>&minus;x&sup2;/2</sup> has no elementary antiderivative, and &Phi; is not an elementary function. The proof of the theorem itself is not reproduced here; the argument above is complete once the theorem is accepted.
+        Note that the definite integral over the whole line is elementary: &int;<sub>&minus;&infin;</sub><sup>&infin;</sup> &phi; = 1, obtained by a two-dimensional argument in polar coordinates and not by an antiderivative. The non-existence concerns the antiderivative as a function of x.
+      </p>
+
+      <h3 class="h5 mt-4">Exercise 2: erf as an exact representation, and why numerical methods remain necessary</h3>
+      <p>
+        The error function is defined by erf(t) = (2/&radic;&pi;) &int;<sub>0</sub><sup>t</sup> e<sup>&minus;s&sup2;</sup> ds. This adds a new named function to the repertoire, and the formula of section 7 then expresses &Phi; exactly: &Phi;(x) = &frac12;[1 + erf(x/&radic;2)].
+        It is an exact analytical representation, but not a closed form in elementary functions, which is what Liouville&rsquo;s theorem excludes.
+        Naming a function does not compute it. A numerical value still requires an algorithm, and each natural choice has a limitation:
+        the defining integral needs quadrature; the Maclaurin series converges for every t but, in its alternating form, loses accuracy through cancellation as t grows (shown in section 10);
+        the asymptotic series and the continued fraction are accurate in the tails and poor near zero; fixed rational approximations such as A&amp;S 7.1.26 are fast but limited to a few digits.
+        A practical implementation therefore combines representations, as in section 7.
+      </p>
+
+      <h3 class="h5 mt-4">Exercise 2: the three approaches compared</h3>
+      <p class="mb-0">
+        Quadrature is the simplest to write and needs no special function, but its cost grows with the accuracy required.
+        The alternating Maclaurin series is accurate for small x and breaks down for large x, since its terms grow to a large size before cancelling; the positive-term form removes this.
+        The A&amp;S approximation is the cheapest and is accurate only to about 10<sup>&minus;7</sup>.
+        In the upper tail the relative error of the subtraction 1 &minus; &Phi;(x) grows rapidly with x, because an absolute error of about 10<sup>&minus;16</sup> is divided by an ever smaller Q(x), while the continued fraction keeps a relative error close to roundoff.
+      </p>
+    </section>
+
+    <!-- ===== 12. TAKEAWAYS ===== -->
+    <section class="mb-5">
+      <h2 class="h4">12. Key takeaways</h2>
+      <div class="card">
+        <div class="card-body">
+          <ul class="mb-0">
+            <li><strong>Same value.</strong> On Riemann-integrable functions both definitions give the same value, and the numerical sums approach it.</li>
+            <li><strong>Smooth functions.</strong> The midpoint rule is more accurate and cheaper than any Lebesgue-type sum computed from samples.</li>
+            <li><strong>Where Lebesgue helps.</strong> The Lebesgue approach is most useful where f is simple in its values and not in x (step functions), and where the Riemann integral fails (Dirichlet) or needs a limit (1/&radic;x).</li>
+            <li><strong>Monte Carlo.</strong> Its noise is of the order &sigma;(b &minus; a)/&radic;N and does not depend on the smoothness of f.</li>
+            <li><strong>Normal CDF.</strong> &Phi;(x) = &frac12;[1 + erf(x/&radic;2)] is exact but not elementary: Liouville&rsquo;s theorem rules out an elementary antiderivative of e<sup>&minus;x&sup2;/2</sup>.</li>
+            <li><strong>Evaluation.</strong> Accurate evaluation uses different representations in different regions: a positive-term series near the centre, a continued fraction in the tails, and symmetry for negative x. In the upper tail Q(x) must be computed directly, because 1 &minus; &Phi;(x) cancels.</li>
+            <li><strong>Accuracy reached.</strong> The implementation agrees with the NIST table to its 5 decimals and with a high-precision reference to about 10<sup>&minus;14</sup> relative error or better in these tests.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REFERENCES ===== -->
+    <section class="mb-5">
       <h2 class="h4">References</h2>
-      <p class="small text-muted">Provenance of the content: the tasks and examples come from the assignment, the numbers from the code on this page, and the discussion is original analysis. Secondary sources are marked. All links below were opened or seen in search results while preparing this page, except where marked.</p>
+      <p class="small text-muted">
+        Provenance: the functions, intervals and tasks come from the assignment. Every number in the tables and charts is computed in the browser by script.js, except the reference values of section 8:
+        the 5-decimal values are read from the NIST/SEMATECH table, and the 17-digit values were computed offline with the Python library mpmath at 40-digit precision.
+        The derivations, the choice of methods and the interpretation are original analysis. Secondary sources are marked. Every link below was opened or seen in search results while preparing the page, except where marked.
+      </p>
+
       <h3 class="h6 mt-3">Riemann and Lebesgue integration</h3>
       <ul class="small">
-        <li class="mb-2 text-break">Narcowich, F. J. (2014). <em>Notes on the Lebesgue Integral</em>, Texas A&amp;M University. <a href="https://people.tamu.edu/~f-narcowich/m641/m641_notes/lebesgue_integral.pdf" target="_blank" rel="noopener">people.tamu.edu/~f-narcowich/m641/m641_notes/lebesgue_integral.pdf</a></li>
-        <li class="mb-2 text-break">Wikipedia, <em>Lebesgue integral</em> (secondary; domain partition versus range partition, Dirichlet function). <a href="https://en.wikipedia.org/wiki/Lebesgue_integral" target="_blank" rel="noopener">en.wikipedia.org/wiki/Lebesgue_integral</a></li>
-        <li class="mb-2 text-break">Weisstein, E. W., <em>Thomae Function</em>, MathWorld (secondary). <a href="https://mathworld.wolfram.com/ThomaeFunction.html" target="_blank" rel="noopener">mathworld.wolfram.com/ThomaeFunction.html</a></li>
+        <li class="mb-2 text-break">F. J. Narcowich, <em>Notes on the Lebesgue Integral</em>, Texas A&amp;M University. <a href="https://people.tamu.edu/~f-narcowich/m641/m641_notes/lebesgue_integral.pdf" target="_blank" rel="noopener">https://people.tamu.edu/~f-narcowich/m641/m641_notes/lebesgue_integral.pdf</a></li>
+        <li class="mb-2 text-break">Wikipedia, <em>Lebesgue integral</em> (secondary: partition of the domain versus partition of the range, Dirichlet function). <a href="https://en.wikipedia.org/wiki/Lebesgue_integral" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Lebesgue_integral</a></li>
+        <li class="mb-2 text-break">E. W. Weisstein, <em>Thomae Function</em>, MathWorld (secondary). <a href="https://mathworld.wolfram.com/ThomaeFunction.html" target="_blank" rel="noopener">https://mathworld.wolfram.com/ThomaeFunction.html</a></li>
       </ul>
-      <h3 class="h6 mt-3">Normal CDF, error function, numerical evaluation</h3>
+
+      <h3 class="h6 mt-3">Normal CDF, error function and numerical evaluation</h3>
       <ul class="small">
-        <li class="mb-2 text-break">NIST/SEMATECH e-Handbook of Statistical Methods, <em>1.3.6.7.1 Cumulative Distribution Function of the Standard Normal Distribution</em> (table used in 2.2). <a href="https://itl.nist.gov/div898/handbook/eda/section3/eda3671.htm" target="_blank" rel="noopener">itl.nist.gov/div898/handbook/eda/section3/eda3671.htm</a></li>
-        <li class="mb-2 text-break">NIST Digital Library of Mathematical Functions, §7.9 Continued Fractions (formula 7.9.2 used in 2.1). <a href="https://dlmf.nist.gov/7.9" target="_blank" rel="noopener">dlmf.nist.gov/7.9</a></li>
-        <li class="mb-2 text-break">Hogg, McKean, Craig, <em>Introduction to Mathematical Statistics</em>, §3.4, lecture notes by R. Gardner, East Tennessee State University (the note given in the assignment). <a href="https://faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf" target="_blank" rel="noopener">faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf</a></li>
-        <li class="mb-2 text-break">Abramowitz, M., Stegun, I. A. (1964). <em>Handbook of Mathematical Functions</em>, formula 7.1.26. The book was not opened; the coefficients and the 1.5·10<sup>−7</sup> bound were checked in secondary sources (Cook, J. D., <a href="https://www.johndcook.com/blog/?p=1293" target="_blank" rel="noopener">johndcook.com/blog/?p=1293</a>; Wikipedia, <em>Error function</em>) and numerically in the code of this page.</li>
+        <li class="mb-2 text-break">NIST/SEMATECH, <em>e-Handbook of Statistical Methods</em>, 1.3.6.7.1 Cumulative Distribution Function of the Standard Normal Distribution (table used in section 8). <a href="https://itl.nist.gov/div898/handbook/eda/section3/eda3671.htm" target="_blank" rel="noopener">https://itl.nist.gov/div898/handbook/eda/section3/eda3671.htm</a></li>
+        <li class="mb-2 text-break">NIST, <em>Digital Library of Mathematical Functions</em>, section 7.9 Continued Fractions (formula 7.9.2, used in section 7). <a href="https://dlmf.nist.gov/7.9" target="_blank" rel="noopener">https://dlmf.nist.gov/7.9</a></li>
+        <li class="mb-2 text-break">R. Gardner, lecture notes on Hogg, McKean, Craig, <em>Introduction to Mathematical Statistics</em>, section 3.4, East Tennessee State University (the note given in the assignment). <a href="https://faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf" target="_blank" rel="noopener">https://faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf</a></li>
+        <li class="mb-2 text-break">M. Abramowitz, I. A. Stegun, <em>Handbook of Mathematical Functions</em>, 1964, formula 7.1.26. The book was not opened: the coefficients and the 1.5&middot;10<sup>&minus;7</sup> bound were checked in secondary sources (J. D. Cook, <a href="https://www.johndcook.com/blog/?p=1293" target="_blank" rel="noopener">https://www.johndcook.com/blog/?p=1293</a>; Wikipedia, <em>Error function</em>) and numerically in the code of this page.</li>
       </ul>
-      <h3 class="h6 mt-3">Liouville's theorem</h3>
-      <ul class="small">
-        <li class="mb-2 text-break">Conrad, B. <em>Impossibility theorems for elementary integration</em>. <a href="https://williamstein.org/edu/winter06/20b/Conrad.pdf" target="_blank" rel="noopener">williamstein.org/edu/winter06/20b/Conrad.pdf</a> (copy hosted on a course page; only the abstract and introduction were seen, the criterion in 2.4 is stated as given there for f·e<sup>g</sup> with rational f and g).</li>
-        <li class="mb-2 text-break">Rosenlicht, M. (1972). Integration in finite terms, <em>American Mathematical Monthly</em> 79, 963–972. Not opened (journal access); cited as referenced in the Hogg–McKean–Craig note above.</li>
+
+      <h3 class="h6 mt-3">Liouville&rsquo;s theorem</h3>
+      <ul class="small mb-0">
+        <li class="mb-2 text-break">B. Conrad, <em>Impossibility theorems for elementary integration</em>. <a href="https://williamstein.org/edu/winter06/20b/Conrad.pdf" target="_blank" rel="noopener">https://williamstein.org/edu/winter06/20b/Conrad.pdf</a> (copy hosted on a course page; only the abstract and the introduction were seen, and the criterion of section 11 is stated as given there for f&middot;e<sup>g</sup> with f and g rational).</li>
+        <li class="mb-2 text-break">M. Rosenlicht, Integration in finite terms, <em>American Mathematical Monthly</em> 79, 1972, 963&ndash;972. Not opened (journal access); cited as referenced in the Gardner notes above.</li>
       </ul>
     </section>
+
   </main>
 
   <footer class="bg-light border-top py-3 mt-auto">
-    <div class="container text-center text-muted small">© <span id="anno"></span> Vincenzo · Homework</div>
+    <div class="container text-center text-muted small">
+      &copy; <span id="anno"></span> Vincenzo &middot; Homework
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -248,9 +422,10 @@
   <script>
     window.addEventListener("load", function () {
       if (typeof init !== "function") {
-        var e = document.getElementById("jsError");
-        e.textContent = "script.js did not load or contains an error: the page cannot compute its results.";
-        e.classList.remove("d-none");
+        var box = document.createElement("div");
+        box.className = "alert alert-danger m-3";
+        box.textContent = "script.js did not load or contains an error. Open the browser console (F12) for details.";
+        document.body.prepend(box);
       }
     });
   </script>
