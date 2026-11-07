@@ -289,7 +289,7 @@
       <div class="card">
         <div class="card-body">
 
-          <h3 class="h6">Exercise 1: accuracy, convergence and efficiency</h3>
+          <h3 class="h6"><strong>Exercise 1</strong>: accuracy, convergence and efficiency</h3>
           <ul>
             <li>
               <p>
@@ -309,33 +309,34 @@
               </p>
             </li>
           </ul>
-          <h3 class="h6 mt-3">Exercise 1: do the two approaches converge to the same value?</h3>
-          <p>
-            For a Riemann-integrable function the Lebesgue integral exists and equals the Riemann integral. This is a theorem, and the tables of section 1.5 are consistent with it:
-            for f1&ndash;f4, f6 and f7 the Riemann and Lebesgue sums approach the same exact value as N grows, the Monte Carlo estimates agree with it to within a few times their noise,
-            and the column |R &minus; L grid| is of the size of the larger of the two discretization errors.
-          </p>
-          <p>
-            What differs is the path to the limit. The Riemann sums are indexed by the fineness of a partition of the domain, the Lebesgue sums by the fineness of a partition of the range,
-            so their errors have different sources: the variation of f within a subinterval for Riemann, the level spacing and the preimage measure for Lebesgue.
-            For f5 the Riemann integral exists only as an improper integral, the limit of the integrals over [&epsilon;, 1]; the Lebesgue integral of this non-negative function is the supremum over the simple functions below it.
-            Both equal 2, and the sums approach it slowly.
-          </p>
-
-          <h3 class="h6 mt-3">Exercise 1: where the approaches differ</h3>
+          <h3 class="h6 mt-3"><strong>Exercise 1</strong>: do the two approaches converge to the same value?</h3>
+          <ul>
+            <li>
+              <p>
+                For a Riemann-integrable function the Lebesgue integral exists and equals the Riemann integral. This is a theorem, and the tables of section 1.5 are consistent with it:
+                for f1&ndash;f4, f6 and f7 the Riemann and Lebesgue sums approach the same exact value as N grows, the Monte Carlo estimates agree with it to within a few times their noise,
+                and the column |R &minus; L grid| is of the size of the larger of the two discretization errors.
+                What differs is the path to the limit. The Riemann sums are indexed by the fineness of a partition of the domain, the Lebesgue sums by the fineness of a partition of the range,
+                so their errors have different sources: the variation of f within a subinterval for Riemann, the level spacing and the preimage measure for Lebesgue.
+                For f5 the Riemann integral exists only as an improper integral, the limit of the integrals over [&epsilon;, 1]; the Lebesgue integral of this non-negative function is the supremum over the simple functions below it.
+                Both equal 2, and the sums approach it slowly.
+              </p>
+            </li>
+          </ul>
+          <h3 class="h6 mt-3"><strong>Exercise 1</strong>: where the approaches differ</h3>
           <p>
             The Dirichlet function has no Riemann integral and a Lebesgue integral equal to 0; the Thomae function has both, equal to 0, and its upper Darboux sums approach 0 slowly while the Lebesgue computation gives 0 at once (section 1.6).
             The step functions f3 and f6 show a Riemann error that decays like 1/N, while the Lebesgue sum with exact preimages is exact; f5 shows a Riemann integral that needs a limit, handled in the Lebesgue sum by truncating the range.
           </p>
 
-          <h3 class="h6 mt-3">Exercise 2: accuracy and cost</h3>
+          <h3 class="h6 mt-3"><strong>Exercise 2</strong>: accuracy and cost</h3>
           <p>
             The series with positive terms reaches full double precision with a number of terms that grows with t, because the terms first increase before decreasing; the continued fraction needs fewer iterations as t grows, which is why the two representations are complementary.
             Both cost a few dozen floating-point operations per evaluation, far less than quadrature, which needs one density evaluation per subinterval.
             The trapezoid and Simpson errors decrease algebraically with n and then stop at the roundoff level.
           </p>
 
-          <h3 class="h6 mt-3">Exercise 2: why the normal CDF is not an elementary function (Liouville)</h3>
+          <h3 class="h6 mt-3"><strong>Exercise 2</strong>: why the normal CDF is not an elementary function (Liouville)</h3>
           <p>
             An elementary function is one built from rational functions, exponentials and logarithms (hence also roots, trigonometric functions and their inverses) by finitely many sums, products, quotients and compositions.
             &Phi; is the antiderivative of &phi; that vanishes at &minus;&infin;, so the question is whether e<sup>&minus;x&sup2;/2</sup> has an elementary antiderivative.
@@ -352,7 +353,7 @@
             Note that the definite integral over the whole line is elementary: &int;<sub>&minus;&infin;</sub><sup>&infin;</sup> &phi; = 1, obtained by a two-dimensional argument in polar coordinates and not by an antiderivative. The non-existence concerns the antiderivative as a function of x.
           </p>
 
-          <h3 class="h6 mt-3">Exercise 2: erf as an exact representation, and why numerical methods remain necessary</h3>
+          <h3 class="h6 mt-3"><strong>Exercise 2</strong>: erf as an exact representation, and why numerical methods remain necessary</h3>
           <p>
             The error function is defined by erf(t) = (2/&radic;&pi;) &int;<sub>0</sub><sup>t</sup> e<sup>&minus;s&sup2;</sup> ds. This adds a new named function to the repertoire, and the formula of section 2.1 then expresses &Phi; exactly: &Phi;(x) = &frac12;[1 + erf(x/&radic;2)].
             It is an exact analytical representation, but not a closed form in elementary functions, which is what Liouville&rsquo;s theorem excludes.
@@ -362,7 +363,7 @@
             A practical implementation therefore combines representations, as in section 2.1.
           </p>
 
-          <h3 class="h6 mt-3">Exercise 2: the three approaches compared</h3>
+          <h3 class="h6 mt-3"><strong>Exercise 2</strong>: the three approaches compared</h3>
           <p class="mb-0">
             Quadrature is the simplest to write and needs no special function, but its cost grows with the accuracy required.
             The alternating Maclaurin series is accurate for small x and breaks down for large x, since its terms grow to a large size before cancelling; the positive-term form removes this.
