@@ -48,7 +48,7 @@
     <section class="mb-5">
       <h3 class="h5">1.2 Run the computations</h3>
       <p>
-        The page computes everything when it loads. Only the Monte Carlo parts depend on the seed, and they change by about the noise shown in section 1.5 when the seed changes.
+        Only the Monte Carlo parts depend on the seed, and they change by about the noise shown in section 1.5 when the seed changes.
         The size N chosen here is used in the tables of sections 1.3 and 1.4. The random numbers come from a small seeded generator (mulberry32).
       </p>
       <div class="card mb-3">
@@ -76,7 +76,7 @@
         </div>
       </div>
       <p class="small text-muted mb-0">
-        <strong>Note:</strong> all the sizes N used on this page are odd, so that the jump and the kink at x = 0.5 fall inside a subinterval and not on a partition point.
+        <strong>Note:</strong> all the sizes N used are odd, so that the jump and the kink at x = 0.5 fall inside a subinterval and not on a partition point.
         With an even N the midpoint sums of f3 and f6 would be exact and would hide the effect of the jump.
       </p>
     </section>
@@ -104,7 +104,15 @@
       </p>
       <ul>
         <li><strong>Grid.</strong> &mu;(E<sub>k</sub>) is estimated as (b &minus; a) times the number of the N midpoints with f in E<sub>k</sub>, divided by N, and [m, M] is the range of the sampled values.</li>
-        <li><strong>Exact preimages</strong> (no sampling). f1: &mu;(E<sub>k</sub>) = 2(arcsin y<sub>k+1</sub> &minus; arcsin y<sub>k</sub>). f2: &radic;y<sub>k+1</sub> &minus; &radic;y<sub>k</sub>. f4: 2(y<sub>k+1</sub> &minus; y<sub>k</sub>) on the range [0, 1/2]. f3 and f6: two level sets of measure 1/2. f5: y<sub>k</sub><sup>&minus;2</sup> &minus; y<sub>k+1</sub><sup>&minus;2</sup> on levels from 1 to &radic;K, plus a tail bin [&radic;K, &infin;) of measure 1/K (no upper sum exists for this truncation). f7: no closed form, because the inverse of sin(x)/x is not elementary.</li>
+        <li><strong>Exact preimages</strong> (no sampling). </li>
+          <ul>
+            <li><strong>f1</strong>: &mu;(E<sub>k</sub>) = 2(arcsin y<sub>k+1</sub> &minus; arcsin y<sub>k</sub>).</li> 
+            <li><strong>f2</strong>: &radic;y<sub>k+1</sub> &minus; &radic;y<sub>k</sub>. </li>
+            <li><strong>f4</strong>: 2(y<sub>k+1</sub> &minus; y<sub>k</sub>) on the range [0, 1/2].</li> 
+            <li><strong>f3</strong> and <strong>f6</strong>: two level sets of measure 1/2. </li>
+            <li><strong>f5</strong>: y<sub>k</sub><sup>&minus;2</sup> &minus; y<sub>k+1</sub><sup>&minus;2</sup> on levels from 1 to &radic;K, plus a tail bin [&radic;K, &infin;) of measure 1/K (no upper sum exists for this truncation). </li>
+            <li><strong>f7</strong>: no closed form, because the inverse of sin(x)/x is not elementary.</li>
+          </ul>
       </ul>
       <div id="lebTable"></div>
       <p class="small text-muted mt-2 mb-0">Same N as in section 1.3. The grid bounds bracket the sampled sum, not exactly the integral.</p>
