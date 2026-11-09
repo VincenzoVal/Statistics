@@ -38,7 +38,7 @@
       
       <h3 class="h5">1.1 Test functions</h3>
       <p>
-        Seven functions come from the assignment (f1&ndash;f7); the Dirichlet and Thomae functions are treated in section 1.6.
+        Seven functions (f1&ndash;f7); the Dirichlet and Thomae functions are treated in section 1.6.
         For f1&ndash;f7 the integral is known exactly, so every error below is measured against a true value. For f7 the value is the sine integral Si(&pi;).
       </p>
       <div id="fnTable"></div>
@@ -166,7 +166,7 @@
 
       <h3 class="h6 mt-3">Cost for f1 at N = K = 1,000,000</h3>
       <div id="effTable"></div>
-      <p class="small text-muted mt-2">Times depend on the machine and the browser; only their ratios are meaningful.</p>
+      <p class="small text-muted mt-2">Only the ratios between times are meaningful.</p>
     </section>
 
     <!-- ===== 1.6 DIFFERENT BEHAVIOUR ===== -->
@@ -241,7 +241,7 @@
       </p>
       <div id="refTable"></div>
       <p class="small text-muted mt-2 mb-0">
-        <strong>Note:</strong> the assignment points to a theory note and gives no table of values. The numerical reference is therefore the NIST table (5 decimals), complemented by 17-digit values for a comparison to full double precision.
+        <strong>Note:</strong> The numerical reference is the NIST table (5 decimals), complemented by 17-digit values for a comparison to full double precision.
       </p>
     </section>
 
@@ -274,7 +274,7 @@
       </div>
       <h3 class="h6 mt-3">Cost per evaluation of &Phi;(x)</h3>
       <div id="costTable"></div>
-      <p class="small text-muted mt-2">Timing over 200,000 points in [&minus;6, 6] (5,000 points for the quadrature rules); machine dependent. Work counts are the maxima over that grid.</p>
+      <p class="small text-muted mt-2">Timing are measured over 200,000 points in [&minus;6, 6] (5,000 points for the quadrature rules); only their ratios are meaningful. Work counts are the maxima over that grid.</p>
       <p class="small" id="checkOut"></p>
     </section>
 
@@ -282,8 +282,8 @@
     <section class="mb-5">
       <h3 class="h5">2.4 The three approaches compared</h3>
       <p>
-        Absolute error of &Phi;(x) against the high-precision reference, for the three families in the assignment: numerical integration (trapezoid, Simpson), series expansion of erf,
-        and approximations through erf (the hybrid of section 2.1 and A&amp;S 7.1.26).
+        Absolute error of &Phi;(x) against the high-precision reference, for the three families: numerical integration (trapezoid, Simpson), series expansion of erf,
+        and approximations through erf (the hybrid of section 2.1).
       </p>
       <div id="cmpTable" class="mb-3"></div>
       <h3 class="h6 mt-3">Extra: loss of precision in the upper tail</h3>
@@ -369,7 +369,7 @@
                 <li>Hence r is a polynomial. If r = 0, then r&prime; &minus; x r = 0 &ne; 1. If deg r = d &ge; 0, then deg(x r) = d + 1 and deg r&prime; &le; d &minus; 1, so deg(r&prime; &minus; x r) = d + 1 &ge; 1, and the polynomial r&prime; &minus; x r cannot be the constant 1.</li>
               </ol>
               <p>
-                So e<sup>&minus;x&sup2;/2</sup> has no elementary antiderivative, and &Phi; is not an elementary function. The proof of the theorem itself is not reproduced here; the argument above is complete once the theorem is accepted.
+                So e<sup>&minus;x&sup2;/2</sup> has no elementary antiderivative, and &Phi; is not an elementary function. The proof of the theorem itself is not reproduced here.
                 Note that the definite integral over the whole line is elementary: &int;<sub>&minus;&infin;</sub><sup>&infin;</sup> &phi; = 1, obtained by a two-dimensional argument in polar coordinates and not by an antiderivative. The non-existence concerns the antiderivative as a function of x.
               </p>
             </li>
@@ -382,7 +382,7 @@
                 It is an exact analytical representation, but not a closed form in elementary functions, which is what Liouville&rsquo;s theorem excludes.
                 Naming a function does not compute it. A numerical value still requires an algorithm, and each natural choice has a limitation:
                 the defining integral needs quadrature; the Maclaurin series converges for every t but, in its alternating form, loses accuracy through cancellation as t grows (shown in section 2.4);
-                the asymptotic series and the continued fraction are accurate in the tails and poor near zero; fixed rational approximations such as A&amp;S 7.1.26 are fast but limited to a few digits.
+                the asymptotic series and the continued fraction are accurate in the tails and poor near zero; fixed rational approximations are fast but limited to a few digits.
                 A practical implementation therefore combines representations, as in section 2.1.
               </p>
             </li>
@@ -428,20 +428,20 @@
       <ul class="small">
         <li class="mb-2 text-break">F. J. Narcowich, <em>Notes on the Lebesgue Integral</em>, Texas A&amp;M University. <a href="https://people.tamu.edu/~f-narcowich/m641/m641_notes/lebesgue_integral.pdf" target="_blank" rel="noopener">https://people.tamu.edu/~f-narcowich/m641/m641_notes/lebesgue_integral.pdf</a></li>
         <li class="mb-2 text-break">Wikipedia, <em>Lebesgue integral</em> (secondary: partition of the domain versus partition of the range, Dirichlet function). <a href="https://en.wikipedia.org/wiki/Lebesgue_integral" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Lebesgue_integral</a></li>
-        <li class="mb-2 text-break">E. W. Weisstein, <em>Thomae Function</em>, MathWorld (secondary). <a href="https://mathworld.wolfram.com/ThomaeFunction.html" target="_blank" rel="noopener">https://mathworld.wolfram.com/ThomaeFunction.html</a></li>
+        <li class="mb-2 text-break">E. W. Weisstein, <em>Thomae Function</em>, MathWorld. <a href="https://mathworld.wolfram.com/ThomaeFunction.html" target="_blank" rel="noopener">https://mathworld.wolfram.com/ThomaeFunction.html</a></li>
       </ul>
 
       <h3 class="h6 mt-3">Normal CDF, error function and numerical evaluation</h3>
       <ul class="small">
         <li class="mb-2 text-break">NIST/SEMATECH, <em>e-Handbook of Statistical Methods</em>, 1.3.6.7.1 Cumulative Distribution Function of the Standard Normal Distribution (table used in section 2.2). <a href="https://itl.nist.gov/div898/handbook/eda/section3/eda3671.htm" target="_blank" rel="noopener">https://itl.nist.gov/div898/handbook/eda/section3/eda3671.htm</a></li>
-        <li class="mb-2 text-break">NIST, <em>Digital Library of Mathematical Functions</em>, section 7.9 Continued Fractions (formula 7.9.2, used in section 2.1). <a href="https://dlmf.nist.gov/7.9" target="_blank" rel="noopener">https://dlmf.nist.gov/7.9</a></li>
-        <li class="mb-2 text-break">R. Gardner, lecture notes on Hogg, McKean, Craig, <em>Introduction to Mathematical Statistics</em>, section 3.4, East Tennessee State University (the note given in the assignment). <a href="https://faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf" target="_blank" rel="noopener">https://faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf</a></li>
-        <li class="mb-2 text-break">M. Abramowitz, I. A. Stegun, <em>Handbook of Mathematical Functions</em>, 1964, formula 7.1.26. The book was not opened: the coefficients and the 1.5&middot;10<sup>&minus;7</sup> bound were checked in secondary sources (J. D. Cook, <a href="https://www.johndcook.com/blog/?p=1293" target="_blank" rel="noopener">https://www.johndcook.com/blog/?p=1293</a>; Wikipedia, <em>Error function</em>) and numerically in the code of this page.</li>
+        <li class="mb-2 text-break">NIST, <em>Digital Library of Mathematical Functions</em>, section 7.9 Continued Fractions (Section 2.1). <a href="https://dlmf.nist.gov/7.9" target="_blank" rel="noopener">https://dlmf.nist.gov/7.9</a></li>
+        <li class="mb-2 text-break">R. Gardner, lecture notes on Hogg, McKean, Craig, <em>Introduction to Mathematical Statistics</em>, section 3.4, East Tennessee State University. <a href="https://faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf" target="_blank" rel="noopener">https://faculty.etsu.edu/gardnerr/4047/notes-Hogg-McKean-Craig/Hogg-McKean-Craig-3-4.pdf</a></li>
+        <li class="mb-2 text-break">M. Abramowitz, I. A. Stegun, <em>Handbook of Mathematical Functions</em>, 1964. The coefficients and the 1.5&middot;10<sup>&minus;7</sup> bound were checked here : J. D. Cook, <a href="https://www.johndcook.com/blog/?p=1293" target="_blank" rel="noopener">https://www.johndcook.com/blog/?p=1293</a>; Wikipedia, <em>Error function</em> and numerically in the code of this page.</li>
       </ul>
 
       <h3 class="h6 mt-3">Liouville&rsquo;s theorem</h3>
       <ul class="small mb-0">
-        <li class="mb-2 text-break">B. Conrad, <em>Impossibility theorems for elementary integration</em>. <a href="https://math.stanford.edu/~conrad/papers/elemint.pdf" target="_blank" rel="noopener">https://math.stanford.edu/~conrad/papers/elemint.pdf</a> (copy hosted on a course page; only the abstract and the introduction were seen, and the criterion used in the Discussion (Liouville) is stated as given there for f&middot;e<sup>g</sup> with f and g rational).</li>
+        <li class="mb-2 text-break">B. Conrad, <em>Impossibility theorems for elementary integration</em>. <a href="https://math.stanford.edu/~conrad/papers/elemint.pdf" target="_blank" rel="noopener">https://math.stanford.edu/~conrad/papers/elemint.pdf</a></li>
       </ul>
     </section>
 
