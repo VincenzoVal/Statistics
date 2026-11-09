@@ -36,7 +36,7 @@
     <section class="mb-5">
       <h2 class="h4">Exercise 1 &mdash; Riemann and Lebesque Integration</h2>
       
-      <h3 class="h4">1.1 Test functions</h3>
+      <h3 class="h5">1.1 Test functions</h3>
       <p>
         Seven functions come from the assignment (f1&ndash;f7); the Dirichlet and Thomae functions are treated in section 1.6.
         For f1&ndash;f7 the integral is known exactly, so every error below is measured against a true value. For f7 the value is the sine integral Si(&pi;).
@@ -46,7 +46,7 @@
 
     <!-- ===== 1.2 RUN ===== -->
     <section class="mb-5">
-      <h3 class="h4">1.2 Run the computations</h3>
+      <h3 class="h5">1.2 Run the computations</h3>
       <p>
         The page computes everything when it loads. Only the Monte Carlo parts depend on the seed, and they change by about the noise shown in section 1.5 when the seed changes.
         The size N chosen here is used in the tables of sections 1.3 and 1.4. The random numbers come from a small seeded generator (mulberry32).
@@ -83,7 +83,7 @@
 
     <!-- ===== 1.3 RIEMANN ===== -->
     <section class="mb-5">
-      <h3 class="h4">1.3 Riemann-type sums (partition of the domain)</h3>
+      <h3 class="h5">1.3 Riemann-type sums (partition of the domain)</h3>
       <p>
         Split [a, b] into n subintervals of length h = (b &minus; a)/n. The left, right and midpoint sums are &Sigma; f(&xi;<sub>i</sub>)&middot;h, with &xi;<sub>i</sub> the left end, the right end or the midpoint of each subinterval.
         The lower and upper Darboux sums use the infimum and the supremum of f on each subinterval; here they are approximated by the minimum and the maximum of three samples per subinterval, which is not exact in general.
@@ -97,7 +97,7 @@
 
     <!-- ===== 1.4 LEBESGUE ===== -->
     <section class="mb-5">
-      <h3 class="h4">1.4 Lebesgue-type sums (partition of the range)</h3>
+      <h3 class="h5">1.4 Lebesgue-type sums (partition of the range)</h3>
       <p>
         Split the range [m, M] of f into K equal levels y<sub>k</sub> = m + k&Delta; and let E<sub>k</sub> = f<sup>&minus;1</sup>([y<sub>k</sub>, y<sub>k+1</sub>)).
         The lower and upper Lebesgue sums are &Sigma; y<sub>k</sub> &mu;(E<sub>k</sub>) and &Sigma; y<sub>k+1</sub> &mu;(E<sub>k</sub>): they are integrals of simple functions below and above f. Here K = N.
@@ -116,7 +116,7 @@
 
     <!-- ===== 1.5 COMPARISON ===== -->
     <section class="mb-5">
-      <h3 class="h4">1.5 Comparison: accuracy, convergence, efficiency</h3>
+      <h3 class="h5">1.5 Comparison: accuracy, convergence, efficiency</h3>
       <p>
         R is the Riemann midpoint sum, L grid the midpoint of the grid bounds, L exact the lower sum with exact preimages (K = N).
         The order is the slope of log|error| against log N between N = 1001 and N = 100001; &ldquo;&asymp; roundoff&rdquo; means that the error there is below 10<sup>&minus;12</sup>. Errors at N = 10001:
@@ -163,7 +163,7 @@
 
     <!-- ===== 1.6 DIFFERENT BEHAVIOUR ===== -->
     <section class="mb-5">
-      <h3 class="h4">1.6 Functions on which the approaches behave differently</h3>
+      <h3 class="h5">1.6 Functions on which the approaches behave differently</h3>
 
       <h4 class="h5">Dirichlet function: 1 on the rationals, 0 on the irrationals, on [0, 1]</h4>
       <p>
@@ -201,7 +201,7 @@
     <section class="mb-5">
       <h2 class="h4">Exercise 1 &mdash; Numerical Computation of the Normal CDF</h2>
       
-      <h3 class="h4">2.1 The method for the normal CDF</h3>
+      <h3 class="h5">2.1 The method for the normal CDF</h3>
       <p>
         The standard normal CDF is &Phi;(x) = &int;<sub>&minus;&infin;</sub><sup>x</sup> &phi;(u) du with &phi;(u) = e<sup>&minus;u&sup2;/2</sup>/&radic;(2&pi;).
         By symmetry and the substitution u = &radic;2&middot;s:
@@ -226,7 +226,7 @@
 
     <!-- ===== 2.2 REFERENCE ===== -->
     <section class="mb-5">
-      <h3 class="h4">2.2 Comparison with a trusted reference</h3>
+      <h3 class="h5">2.2 Comparison with a trusted reference</h3>
       <p>
         The NIST/SEMATECH table lists the area between 0 and x to 5 decimals; &Phi;(x) is that area plus 0.5, and for negative x NIST uses &Phi;(&minus;x) = 1 &minus; &Phi;(x).
         The rows without a NIST value are tail points, where the comparison uses the 17-digit reference computed offline with mpmath.
@@ -239,7 +239,7 @@
 
     <!-- ===== 2.3 ACCURACY AND COST ===== -->
     <section class="mb-5">
-      <h3 class="h4">2.3 Accuracy and cost</h3>
+      <h3 class="h5">2.3 Accuracy and cost</h3>
       <div class="row g-3 mb-3">
         <div class="col-lg-6">
           <h3 class="h6">Series: error against the number of terms</h3>
@@ -272,7 +272,7 @@
 
     <!-- ===== 2.4 APPROACHES ===== -->
     <section class="mb-5">
-      <h3 class="h4">2.4 The three approaches compared</h3>
+      <h3 class="h5">2.4 The three approaches compared</h3>
       <p>
         Absolute error of &Phi;(x) against the high-precision reference, for the three families in the assignment: numerical integration (trapezoid, Simpson), series expansion of erf,
         and approximations through erf (the hybrid of section 2.1 and A&amp;S 7.1.26).
@@ -395,11 +395,6 @@
     <!-- ===== REFERENCES ===== -->
     <section class="mb-5">
       <h2 class="h4">References</h2>
-      <p class="small text-muted">
-        Provenance: the functions, intervals and tasks come from the assignment. Every number in the tables and charts is computed in the browser by script.js, except the reference values of section 2.2:
-        the 5-decimal values are read from the NIST/SEMATECH table, and the 17-digit values were computed offline with the Python library mpmath at 40-digit precision.
-        The derivations, the choice of methods and the interpretation are original analysis. Secondary sources are marked. Every link below was opened or seen in search results while preparing the page, except where marked.
-      </p>
 
       <h3 class="h6 mt-3">Riemann and Lebesgue integration</h3>
       <ul class="small">
