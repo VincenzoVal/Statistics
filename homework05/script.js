@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   HMWK 6 - Riemann vs Lebesgue integration, and the numerical normal CDF.
+   HMWK 5 - Riemann vs Lebesgue integration, and the numerical normal CDF.
    Exercise 1: sums from a partition of the domain (Riemann) and of the range (Lebesgue).
    Exercise 2: normal CDF from the error function (series, continued fraction), quadrature, approximations.
    Pure JavaScript, no external libraries.
