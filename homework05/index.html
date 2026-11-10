@@ -101,6 +101,8 @@
       <p>
         Split the range [m, M] of f into K equal levels y<sub>k</sub> = m + k&Delta; and let E<sub>k</sub> = f<sup>&minus;1</sup>([y<sub>k</sub>, y<sub>k+1</sub>)).
         The lower and upper Lebesgue sums are &Sigma; y<sub>k</sub> &mu;(E<sub>k</sub>) and &Sigma; y<sub>k+1</sub> &mu;(E<sub>k</sub>): they are integrals of simple functions below and above f. Here K = N.
+        The two sums differ by &Delta;(b &minus; a), where &Delta; = (M &minus; m)/K is the level spacing, because the sets E<sub>k</sub> partition [a, b]: the integral lies between them and the error of either sum is at most &Delta;(b &minus; a), of order 1/K. (For f5 the tail bin is unbounded, so no upper sum exists.)
+      </p>
       </p>
       <ul>
         <li><strong>Grid.</strong> &mu;(E<sub>k</sub>) is estimated as (b &minus; a) times the number of the N midpoints with f in E<sub>k</sub>, divided by N, and [m, M] is the range of the sampled values.</li>
@@ -181,7 +183,7 @@
       </p>
       <div id="dirTable" class="mb-2"></div>
       <p class="small text-muted">
-        <strong>Note:</strong> the values are computed from the rule above, not by evaluating f. A program cannot evaluate f at sample points: every double-precision number is a rational number, and of 1000 pseudo-random draws <span id="dyadic"></span> are dyadic rationals (multiples of 2<sup>&minus;32</sup>).
+        <strong>Note:</strong> the values are computed from the rule above, not by evaluating f. A program cannot evaluate f at sample points: every double-precision number is a rational number, and <span id="dyadic"></span> of 1000 pseudo-random draws are dyadic rationals (multiples of 2<sup>&minus;32</sup>).
         Riemann sums with machine sample points therefore see f &equiv; 1 and give 1, which is an artifact of the sample points and not the value of any integral.
       </p>
 
@@ -274,7 +276,7 @@
       </div>
       <h3 class="h6 mt-3">Cost per evaluation of &Phi;(x)</h3>
       <div id="costTable"></div>
-      <p class="small text-muted mt-2">Timing are measured over 200,000 points in [&minus;6, 6] (5,000 points for the quadrature rules); only their ratios are meaningful. Work counts are the maxima over that grid.</p>
+      <p class="small text-muted mt-2">Timings are measured over 200,000 points in [&minus;6, 6] (5,000 points for the quadrature rules); only their ratios are meaningful. Work counts are the maxima over that grid.</p>
       <p class="small" id="checkOut"></p>
     </section>
 
@@ -283,7 +285,8 @@
       <h3 class="h5">2.4 The three approaches compared</h3>
       <p>
         Absolute error of &Phi;(x) against the high-precision reference, for the three families: numerical integration (trapezoid, Simpson), series expansion of erf,
-        and approximations through erf (the hybrid of section 2.1).
+        and approximations of erf. This last family is represented by the hybrid of section 2.1 (accurate, but with a variable number of terms) and by formula 7.1.26 of Abramowitz and Stegun
+        (cheap, with a fixed number of operations): erf(t) &asymp; 1 &minus; (a<sub>1</sub>s + a<sub>2</sub>s&sup2; + a<sub>3</sub>s&sup3; + a<sub>4</sub>s<sup>4</sup> + a<sub>5</sub>s<sup>5</sup>) e<sup>&minus;t&sup2;</sup>, with s = 1/(1 + 0.3275911 t), t &ge; 0.
       </p>
       <div id="cmpTable" class="mb-3"></div>
       <h3 class="h6 mt-3">Extra: loss of precision in the upper tail</h3>
@@ -393,7 +396,7 @@
               <p class="mb-0">
                 Quadrature is the simplest to write and needs no special function, but its cost grows with the accuracy required.
                 The alternating Maclaurin series is accurate for small x and breaks down for large x, since its terms grow to a large size before cancelling; the positive-term form removes this.
-                The A&amp;S approximation is the cheapest and is accurate only to about 10<sup>&minus;7</sup>.
+                The Abramowitz&ndash;Stegun formula 7.1.26 is the cheapest, but its error is about 10<sup>&minus;7</sup> and cannot be reduced, since the coefficients are fixed.
                 In the upper tail the relative error of the subtraction 1 &minus; &Phi;(x) grows rapidly with x, because an absolute error of about 10<sup>&minus;16</sup> is divided by an ever smaller Q(x), while the continued fraction keeps a relative error close to roundoff.
               </p>
             </li>
