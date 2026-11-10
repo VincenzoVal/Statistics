@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   HMWK 1 - Toy elliptic curve: private key -> public key
+   HMWK 1.1 - Toy elliptic curve: private key -> public key
    Curve: y^2 = x^3 + a*x + b (mod p), with a = 0, b = 7, p = 17.
    The point at infinity O (neutral element) is represented by null.
    ===================================================================== */
