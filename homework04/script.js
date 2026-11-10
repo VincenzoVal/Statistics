@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   HMWK 4 - n systems, m attackers: Law of Large Numbers and Central Limit
+   HMWK 3 - n systems, m attackers: Law of Large Numbers and Central Limit
    Theorem by simulation (Bernoulli and Rademacher scores).
    Pure JavaScript, no external libraries.
    ===================================================================== */
