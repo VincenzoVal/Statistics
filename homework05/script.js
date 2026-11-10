@@ -531,7 +531,7 @@ async function renderExercise2() {
     ["Series only (no continued fraction)", `up to ${maxTerms}+ terms`, ns(tS.ms, M)],
     ["Trapezoid, n = 100", "101 evaluations of the density", ns(tT.ms, MQ)],
     ["Simpson, n = 100", "101 evaluations of the density", ns(tP.ms, MQ)],
-    ["A&amp;S 7.1.26 approximation", "5 multiplications, one exp", ns(tA.ms, M)],
+    ["Abramowitz&ndash;Stegun 7.1.26 (fixed polynomial approximation of erf)", "5 multiplications, one exp", ns(tA.ms, M)],
   ], "compact");
   let sym = 0, mono = true, prev = -1;
   for (let i = 0; i <= 2000; i++) {
@@ -556,7 +556,7 @@ async function renderExercise2() {
     ["Maclaurin series, alternating form, 150 terms", ...err((x) => 0.5 + 0.5 * erfAlternating(x / SQRT2, 150)), "150 terms"],
     ["Maclaurin series, positive-term form (converged)", ...err((x) => 0.5 + 0.5 * erfSeries(x / SQRT2).value), `up to ${erfSeries(8 / SQRT2).terms} terms`],
     ["erf-based hybrid (this implementation)", ...err(normCdf), `series &le; ${w.s} terms; CF &le; ${w.c} iterations`],
-    ["A&amp;S 7.1.26 approximation of erf", ...err(cdfAS), "constant"],
+    ["Abramowitz&ndash;Stegun 7.1.26 (fixed polynomial approximation of erf)", ...err(cdfAS), "constant"],
   ], "compact");
   $("tailTable").innerHTML = table(["x", "1 &minus; &Phi;(x) by subtraction", "erfc(x/&radic;2)/2 by continued fraction", "Reference Q(x)", "rel. error (subtraction)", "rel. error (continued fraction)"],
     TAILS.map((t) => {
