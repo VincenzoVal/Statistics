@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   HMWK 3 - Caesar cipher and toy elliptic-curve encryption (EC ElGamal)
+   HMWK 2 - Caesar cipher and toy elliptic-curve encryption (EC ElGamal)
    Pure JavaScript, no external libraries (BigInt for the 256-bit arithmetic).
    ===================================================================== */
 
