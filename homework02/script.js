@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   HMWK 2 - From wallet seed to Ethereum address
+   HMWK 1.2 - From wallet seed to Ethereum address
    Libraries (loaded in index.html):
      - ethers v6  -> global "ethers"  (word list, PBKDF2, HMAC, secp256k1, Keccak-256, SHA-2)
      - js-sha3    -> global "sha3_256" (standard SHA3-256, which ethers does not provide)
