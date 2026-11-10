@@ -1,7 +1,7 @@
 "use strict";
 
 /* =====================================================================
-   HMWK 5 - Welford's recurrences and the sampling mean / variance of the
+   HMWK 4 - Welford's recurrences and the sampling mean / variance of the
    scores of m hackers. Pure JavaScript, no external libraries.
    ===================================================================== */
 
