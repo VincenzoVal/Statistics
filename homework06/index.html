@@ -197,31 +197,36 @@ App, High, 40</textarea>
     <!-- ===== DISCUSSION ===== -->
     <section class="mb-5">
       <h2 class="h4">Discussion</h2>
+      <div class="card">
+        <div class="card-body">
 
-      <h3 class="h6 mt-3">Are X and F statistically independent or dependent?</h3>
-      <div id="verdict" class="alert alert-info"></div>
-      <p>
-        The decision compares &chi;&sup2; with the critical value (equivalently p with &alpha;). The cells with the largest contributions show where the observed counts depart most from independence,
-        and the conditional distributions of section 3 show the direction of the departure. Failing to reject H<sub>0</sub> does not prove independence: it only means that the sample is compatible with it.
-        Rejecting H<sub>0</sub> says that the departure is unlikely to be due to sampling variation alone, but it says nothing about the size of the effect: with a large n even a very small departure becomes significant,
-        which is why the page also reports Cramer&rsquo;s V (extra), a normalised measure between 0 and 1.
-      </p>
-      <p>
-        With the synthetic datasets the true situation is known: the first one is dependent by construction, and the test is expected to reject it more reliably as n grows; the second one is independent by construction,
-        and in repeated runs with different seeds the test still rejects in a fraction of runs close to &alpha; (type I error). The statistics change from seed to seed because of Monte Carlo noise.
-      </p>
+          <h3 class="h6">Are X and F statistically independent or dependent?</h3>
+          <p id="verdict"></p>
+          <p>
+            The decision compares &chi;&sup2; with the critical value (equivalently p with &alpha;). The cells with the largest contributions show where the observed counts depart most from independence,
+            and the conditional distributions of section 3 show the direction of the departure. Failing to reject H<sub>0</sub> does not prove independence: it only means that the sample is compatible with it.
+            Rejecting H<sub>0</sub> says that the departure is unlikely to be due to sampling variation alone, but it says nothing about the size of the effect: with a large n even a very small departure becomes significant,
+            which is why the page also reports Cramer&rsquo;s V (extra), a normalised measure between 0 and 1.
+          </p>
+          <p>
+            With the synthetic datasets the true situation is known: the first one is dependent by construction, and the test is expected to reject it more reliably as n grows; the second one is independent by construction,
+            and in repeated runs with different seeds the test still rejects in a fraction of runs close to &alpha; (type I error). The statistics change from seed to seed because of Monte Carlo noise.
+          </p>
 
-      <h3 class="h6 mt-3">Statistical association versus causality</h3>
-      <p>
-        The chi-square test detects an association between X and F: it is symmetric in the two variables and gives no direction. A significant result is compatible with X influencing F, with F influencing X,
-        with a third variable influencing both (a confounder), with a biased way of selecting the observations, or with chance (type I error). In the first synthetic example, attack types and detection outcomes are associated,
-        but the table alone cannot tell whether the attack type changes the chance of detection or whether the detection rules were simply written for some attack types and not for others.
-      </p>
-      <p>
-        An association can also change or even reverse when the data are split by a third variable (Simpson&rsquo;s paradox), so a two-way table of aggregated data is not enough to support a causal claim.
-        Causal conclusions need a study design that controls the other variables, such as a randomised experiment, or explicit causal assumptions about the data-generating process.
-        Independence, instead, is the case where the two variables carry no information about each other in the population.
-      </p>
+          <h3 class="h6 mt-4">Statistical association versus causality</h3>
+          <p>
+            The chi-square test detects an association between X and F: it is symmetric in the two variables and gives no direction. A significant result is compatible with X influencing F, with F influencing X,
+            with a third variable influencing both (a confounder), with a biased way of selecting the observations, or with chance (type I error). In the first synthetic example, attack types and detection outcomes are associated,
+            but the table alone cannot tell whether the attack type changes the chance of detection or whether the detection rules were simply written for some attack types and not for others.
+          </p>
+          <p class="mb-0">
+            An association can also change or even reverse when the data are split by a third variable (Simpson&rsquo;s paradox), so a two-way table of aggregated data is not enough to support a causal claim.
+            Causal conclusions need a study design that controls the other variables, such as a randomised experiment, or explicit causal assumptions about the data-generating process.
+            Independence, instead, is the case where the two variables carry no information about each other in the population.
+          </p>
+
+        </div>
+      </div>
     </section>
 
     <!-- ===== KEY TAKEAWAYS ===== -->
