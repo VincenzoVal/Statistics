@@ -513,7 +513,6 @@ function renderAll(ds, alpha) {
     ? " Some expected counts are small, so the chi-square approximation may be unreliable." : "";
   const pTxt = a.p === 0 ? "p &lt; 1e-300" : `p = ${pFmt(a.p)}`;
   const box = $("verdict");
-  box.className = "alert alert-info";
   box.innerHTML = reject
     ? `At &alpha; = ${alpha}, &chi;&sup2; = ${g(a.chi2)} exceeds the critical value ${g(a.crit)} (df = ${a.df}, ${pTxt}): H<sub>0</sub> is rejected. ` +
       `The data provide evidence that ${esc(ds.xName)} and ${esc(ds.fName)} are statistically dependent. Cramer&rsquo;s V = ${g(a.V)}.${warn}`
