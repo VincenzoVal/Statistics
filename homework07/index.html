@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Statistics - HMWK 7</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/custom.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container">
+      <span class="navbar-brand brand-statico">Statistics 2026/2027</span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="../">Home</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+
+    <h1 class="mb-1">HMWK 7 &mdash; Modes of Convergence and Bayesian Inference</h1>
+    <p class="lead text-muted mb-4">Convergence of random variables, the role of &radic;n, and Bayes&rsquo; theorem with prior, likelihood and posterior</p>
+
+    <noscript><div class="alert alert-danger">This page needs JavaScript to compute its tables and charts.</div></noscript>
+    <div id="jsError" class="alert alert-danger d-none"></div>
+
+    <div class="alert alert-secondary small">
+      <strong>Note on the assignment.</strong> The text of the first part writes &ldquo;LLM&rdquo; where the Law of Large Numbers (LLN) is meant; it is read as LLN.
+      All data on this page are simulated; no real systems or personal data are involved.
+    </div>
+
+    <!-- ===== EXERCISE 1 ===== -->
+    <section class="mb-5">
+      <h2 class="h4">Exercise 1 &mdash; Modes of Convergence in Probability Theory</h2>
+
+      <h3 class="h5">1.1 The four modes of convergence</h3>
+      <p>
+        Let X<sub>1</sub>, X<sub>2</sub>, &hellip; and X be random variables. The first three modes are defined on one common probability space
+        (&Omega;, &#8497;, P); convergence in distribution involves only the laws of the variables.
+      </p>
+      <div class="eq">
+        Almost sure (a.s.): &nbsp; P( { &omega; : X<sub>n</sub>(&omega;) &rarr; X(&omega;) } ) = 1<br>
+        In probability: &nbsp; for every &epsilon; &gt; 0, &nbsp; P( |X<sub>n</sub> &minus; X| &gt; &epsilon; ) &rarr; 0<br>
+        Mean-square (L&sup2;): &nbsp; E[ (X<sub>n</sub> &minus; X)&sup2; ] &rarr; 0<br>
+        In distribution: &nbsp; F<sub>n</sub>(x) &rarr; F(x) at every continuity point x of F
+      </div>
+      <ul>
+        <li><strong>Almost sure.</strong> It is a statement about single trajectories: for almost every outcome &omega;, the numerical sequence X<sub>n</sub>(&omega;) converges to X(&omega;). After some (random) index the trajectory stays within any tolerance &epsilon; for ever.</li>
+        <li><strong>In probability.</strong> For each fixed large n a deviation larger than &epsilon; is unlikely, but the event where it happens may move from one n to the next, so single trajectories can still leave the tolerance band infinitely often.</li>
+        <li><strong>Mean-square.</strong> The expected squared error vanishes. Since E(X<sub>n</sub> &minus; X)&sup2; = Var(X<sub>n</sub> &minus; X) + (E[X<sub>n</sub> &minus; X])&sup2;, both the spread and the bias must vanish. It gives a rate, and by Chebyshev&rsquo;s inequality P(|X<sub>n</sub> &minus; X| &gt; &epsilon;) &le; E(X<sub>n</sub> &minus; X)&sup2; / &epsilon;&sup2;.</li>
+        <li><strong>In distribution.</strong> Only the shape of the law converges. The variables need not be close to each other, and they need not live on the same probability space.</li>
+      </ul>
+      <div class="eq">
+        a.s. &rArr; in probability &rArr; in distribution &nbsp;&nbsp;&nbsp;&nbsp; L&sup2; &rArr; in probability
+      </div>
+      <p class="small text-muted">
+        Further facts: convergence in probability implies that a subsequence converges a.s.; convergence in distribution to a constant c is equivalent to convergence in probability to c;
+        a.s. convergence together with a dominating square-integrable variable implies L&sup2; convergence (dominated convergence).
+      </p>
+      <h4 class="h6">Implications and counterexamples</h4>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-3 compact">
+          <thead><tr><th>Mode</th><th>Implies</th><th>Does not imply (counterexample)</th></tr></thead>
+          <tbody>
+            <tr><td>Almost sure</td><td>in probability, in distribution</td><td>L&sup2;: X<sub>n</sub> = n&middot;1{U &lt; 1/n} with U uniform on (0, 1) converges to 0 a.s. (U &gt; 0 almost surely, so X<sub>n</sub> = 0 for n &gt; 1/U), but E X<sub>n</sub>&sup2; = n.</td></tr>
+            <tr><td>Mean-square (L&sup2;)</td><td>in probability, in distribution</td><td>a.s.: the typewriter sequence of Section 1.3.</td></tr>
+            <tr><td>In probability</td><td>in distribution; a.s. along a subsequence</td><td>a.s.: typewriter sequence. L&sup2;: the sequence n&middot;1{U &lt; 1/n}, since P(X<sub>n</sub> &ne; 0) = 1/n &rarr; 0 while E X<sub>n</sub>&sup2; = n.</td></tr>
+            <tr><td>In distribution</td><td>in probability only when the limit is a constant</td><td>in probability: Y<sub>n</sub> = &minus;X with X standard normal (Section 1.3).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="h5">1.2 Simulation: the four modes on the sample mean</h3>
+      <p>
+        Let X<sub>1</sub>, X<sub>2</sub>, &hellip; be independent exponential variables with mean &mu; = 1 and variance &sigma;&sup2; = 1, and let X&#772;<sub>n</sub> be the mean of the first n.
+        The sample mean is followed along m independent runs of length n<sub>max</sub> and each mode is estimated at the sample sizes in the table.
+        The random numbers come from a small seeded generator (mulberry32), so a given seed always gives the same result.
+      </p>
+      <ul class="small">
+        <li><em>In probability:</em> the fraction of runs with |X&#772;<sub>n</sub> &minus; &mu;| &gt; &epsilon; at the single sample size n.</li>
+        <li><em>Almost sure (finite-horizon proxy):</em> the fraction of runs whose trajectory leaves the band &mu; &plusmn; &epsilon; at <em>any</em> k with n &le; k &le; n<sub>max</sub>. It is never smaller than the previous column and equals it at n = n<sub>max</sub>.</li>
+        <li><em>Mean-square:</em> the average of (X&#772;<sub>n</sub> &minus; &mu;)&sup2;, compared with &sigma;&sup2;/n.</li>
+        <li><em>In distribution:</em> the Kolmogorov&ndash;Smirnov (KS) distance between the law of Z<sub>n</sub> = &radic;n (X&#772;<sub>n</sub> &minus; &mu;)/&sigma; and N(0, 1). The simulated value uses the m runs; the exact value uses the fact that n&middot;X&#772;<sub>n</sub> has a Gamma(n, 1) law, evaluated on a grid of step 0.01.</li>
+      </ul>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-6 col-md-2">
+              <label for="seedInput" class="form-label">Seed</label>
+              <input id="seedInput" type="number" class="form-control" value="2026" step="1">
+            </div>
+            <div class="col-6 col-md-2">
+              <label for="mInput" class="form-label">Runs m</label>
+              <input id="mInput" type="number" class="form-control" value="1000" step="100">
+            </div>
+            <div class="col-6 col-md-2">
+              <label for="nInput" class="form-label">Max n</label>
+              <input id="nInput" type="number" class="form-control" value="10000" step="1000">
+            </div>
+            <div class="col-6 col-md-2">
+              <label for="epsInput" class="form-label">Tolerance &epsilon;</label>
+              <input id="epsInput" type="number" class="form-control" value="0.1" step="0.01">
+            </div>
+            <div class="col-6 col-md-2">
+              <label for="rhoInput" class="form-label">Correlation &rho;</label>
+              <input id="rhoInput" type="number" class="form-control" value="0.2" step="0.05">
+            </div>
+          </div>
+          <div class="row g-3 align-items-end mt-1">
+            <div class="col-auto"><button id="btnRun" type="button" class="btn btn-primary">Run</button></div>
+            <div class="col-auto"><button id="btnSeed" type="button" class="btn btn-outline-secondary">New random seed and run</button></div>
+            <div class="col-auto small text-muted" id="simStatus"></div>
+          </div>
+          <div id="simError" class="text-danger small mt-2 d-none"></div>
+        </div>
+      </div>
+      <p class="small text-muted">The correlation &rho; is used only in Section 1.5; the limit m &times; n<sub>max</sub> &le; 10<sup>8</sup> keeps the computation short.</p>
+
+      <h4 class="h6">Estimated quantities</h4>
+      <div id="convTable" class="mb-2"></div>
+      <p class="small text-muted mb-3" id="convNote"></p>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvProb" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Probability and a.s. proxy.</strong> Both curves tend to 0, but the curve for the whole tail k &ge; n stays above the single-n curve and decreases more slowly.</p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvMse" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Mean-square error.</strong> The simulated error follows the line &sigma;&sup2;/n, so it decreases by one decade per decade of n.</p>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvKs" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Distance from the normal law.</strong> The exact distance decreases steadily (about 1/&radic;n for this skewed law); the simulated one flattens at the Monte Carlo noise level.</p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvPath" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>One trajectory.</strong> After an early, wide oscillation the path of a single run settles inside the band &mu; &plusmn; &epsilon;, which is the pathwise picture of almost sure convergence.</p>
+        </div>
+      </div>
+
+      <h3 class="h5">1.3 Counterexamples between the modes</h3>
+      <p>
+        <strong>(a) In probability, but not almost surely.</strong> Let &omega; be uniform on [0, 1] and, for n = 2<sup>k</sup> + j with 0 &le; j &lt; 2<sup>k</sup>,
+        let X<sub>n</sub>(&omega;) = 1 if &omega; &isin; [j/2<sup>k</sup>, (j+1)/2<sup>k</sup>) and 0 otherwise (the &ldquo;typewriter&rdquo; sequence).
+        Then P(X<sub>n</sub> = 1) = 2<sup>&minus;k</sup> &rarr; 0, so X<sub>n</sub> &rarr; 0 in probability and in L&sup2;. Yet every block k contains exactly one index with X<sub>n</sub>(&omega;) = 1,
+        so X<sub>n</sub>(&omega;) = 1 infinitely often for every &omega; and the sequence converges a.s. for no &omega;. The table follows one outcome &omega; = <span id="twOmega"></span>.
+      </p>
+      <div id="twTable" class="mb-3"></div>
+      <p>
+        <strong>(b) In distribution, but not in probability.</strong> Let X be standard normal and Y<sub>n</sub> = &minus;X for every n. Each Y<sub>n</sub> has exactly the law of X, so Y<sub>n</sub> &rarr; X in distribution trivially.
+        But |Y<sub>n</sub> &minus; X| = 2|X| does not depend on n, so P(|Y<sub>n</sub> &minus; X| &gt; &epsilon;) is a positive constant and Y<sub>n</sub> does not converge to X in probability.
+      </p>
+      <div id="distTable" class="mb-3"></div>
+
+      <h3 class="h5">1.4 Role of each mode in the LLN, the CLT and related results</h3>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-3 compact">
+          <thead><tr><th>Result</th><th>Statement</th><th>Mode</th><th>Typical conditions</th></tr></thead>
+          <tbody>
+            <tr><td>L&sup2; law of large numbers</td><td>E(X&#772;<sub>n</sub> &minus; &mu;)&sup2; = &sigma;&sup2;/n &rarr; 0</td><td>mean-square</td><td>finite variance, uncorrelated variables</td></tr>
+            <tr><td>Weak LLN (Khinchin)</td><td>X&#772;<sub>n</sub> &rarr; &mu;</td><td>in probability</td><td>i.i.d., E|X| &lt; &infin; (no variance needed)</td></tr>
+            <tr><td>Strong LLN (Kolmogorov)</td><td>X&#772;<sub>n</sub> &rarr; &mu; for almost every trajectory</td><td>almost sure</td><td>i.i.d., E|X| &lt; &infin;</td></tr>
+            <tr><td>Central limit theorem (Lindeberg&ndash;L&eacute;vy)</td><td>&radic;n (X&#772;<sub>n</sub> &minus; &mu;)/&sigma; &rarr; N(0, 1)</td><td>in distribution</td><td>i.i.d., 0 &lt; &sigma;&sup2; &lt; &infin;</td></tr>
+            <tr><td>Slutsky, continuous mapping, delta method</td><td>combine limits, e.g. &radic;n (X&#772;<sub>n</sub> &minus; &mu;)/S<sub>n</sub> &rarr; N(0, 1) when S<sub>n</sub> &rarr; &sigma; in probability</td><td>in distribution, with a limit in probability</td><td>basis of t-type and Wald-type intervals and tests</td></tr>
+            <tr><td>Consistency of an estimator</td><td>&theta;&#770;<sub>n</sub> &rarr; &theta;</td><td>in probability (weak) or a.s. (strong)</td><td>e.g. sample mean, sample variance, maximum likelihood under regularity</td></tr>
+            <tr><td>Glivenko&ndash;Cantelli</td><td>sup<sub>x</sub> |F&#770;<sub>n</sub>(x) &minus; F(x)| &rarr; 0</td><td>almost sure</td><td>i.i.d. sample; F&#770;<sub>n</sub> is the empirical distribution function</td></tr>
+            <tr><td>Asymptotic normality of the MLE</td><td>&radic;n (&theta;&#770;<sub>n</sub> &minus; &theta;) &rarr; N(0, 1/I(&theta;))</td><td>in distribution</td><td>regularity conditions, I(&theta;) Fisher information</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The pattern is the same everywhere: the LLN says <em>where</em> the sample mean goes (a constant, so the weak and strong forms and the L&sup2; form are all meaningful),
+        while the CLT says <em>how</em> it fluctuates around that constant on the scale 1/&radic;n (a non-degenerate random limit, so only convergence in distribution can be asked for).
+        Convergence in distribution is the right notion for the CLT because the limit is a law, not a function of the sample.
+      </p>
+
+      <h3 class="h5">1.5 Why &radic;n appears</h3>
+      <p>Let S<sub>n</sub> = X<sub>1</sub> + &hellip; + X<sub>n</sub> with common variance &sigma;&sup2;. Variance is additive only up to the covariances:</p>
+      <div class="eq">
+        Var(S<sub>n</sub>) = &sum;<sub>i</sub> Var(X<sub>i</sub>) + 2 &sum;<sub>i&lt;j</sub> Cov(X<sub>i</sub>, X<sub>j</sub>) = n&sigma;&sup2; &nbsp; (pairwise uncorrelated, in particular independent)<br>
+        sd(S<sub>n</sub>) = &sigma;&radic;n, &nbsp;&nbsp; Var(X&#772;<sub>n</sub>) = &sigma;&sup2;/n, &nbsp;&nbsp; sd(X&#772;<sub>n</sub>) = &sigma;/&radic;n<br>
+        Z<sub>n</sub> = (S<sub>n</sub> &minus; n&mu;)/(&sigma;&radic;n) = &radic;n (X&#772;<sub>n</sub> &minus; &mu;)/&sigma; &nbsp; has mean 0 and variance 1 for every n
+      </div>
+      <p>
+        The standard deviation of the sum grows like &radic;n, not like n: independent errors partly cancel. Dividing S<sub>n</sub> by n^a shows the three regimes:
+        for a &lt; 1/2 the spread diverges, for a &gt; 1/2 it collapses to 0 (this is the LLN, where the limit is a constant), and only a = 1/2 keeps a non-degenerate spread, so &radic;n is the unique scale at which a limit law can exist (the CLT).
+        In statistical inference the same factor gives the standard error &sigma;/&radic;n of the mean and the interval X&#772;<sub>n</sub> &plusmn; z&middot;s/&radic;n: halving the error requires four times as many observations.
+        Estimators whose error is of order 1/&radic;n are called &radic;n-consistent.
+      </p>
+      <p>
+        <strong>Role of independence.</strong> For the variance of the sum only uncorrelatedness is used, and independence is a sufficient condition. Independence is needed for more than variances: it makes the characteristic function of Z<sub>n</sub> a product,
+        &phi;<sub>Z<sub>n</sub></sub>(t) = [&phi;(t/(&sigma;&radic;n))]<sup>n</sup> &rarr; e<sup>&minus;t&sup2;/2</sup>, which is the standard proof of the CLT.
+        When independence fails the scaling changes. With common correlation &rho; &gt; 0:
+      </p>
+      <div class="eq">
+        Var(S<sub>n</sub>) = n&sigma;&sup2; [1 + (n &minus; 1)&rho;] &nbsp;&rArr;&nbsp; Var(X&#772;<sub>n</sub>) = &sigma;&sup2; [&rho; + (1 &minus; &rho;)/n] &rarr; &rho;&sigma;&sup2; &gt; 0
+      </div>
+      <p>
+        The sample mean no longer converges to a constant, because a common component never averages out, and the sd of &radic;n (X&#772;<sub>n</sub> &minus; &mu;) grows like &radic;n.
+        For stationary data with summable covariances &gamma;(k), the scale &radic;n is kept but the variance &sigma;&sup2; is replaced by the long-run variance &sigma;&sup2; + 2&sum;<sub>k&ge;1</sub> &gamma;(k).
+        The experiment uses the exponential runs above for independence and Gaussian variables with equal pairwise correlation &rho; (the input of Section 1.2), generated exactly as X&#772;<sub>n</sub> = &radic;&rho;&middot;W + &radic;((1 &minus; &rho;)/n)&middot;G with W and G standard normal.
+      </p>
+      <h4 class="h6">Independent data: spread of S<sub>n</sub>/n<sup>a</sup> (theory in brackets)</h4>
+      <div id="scaleTable" class="mb-3"></div>
+      <h4 class="h6">Independent against equicorrelated data (theory in brackets)</h4>
+      <div id="depTable" class="mb-3"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvScale" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Three scalings.</strong> Dashed lines are the theory. Only the scaling by &radic;n gives a flat line; dividing by n makes the spread vanish, no division makes it grow like &radic;n.</p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvDep" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Effect of dependence.</strong> With independent data the &radic;n-normalised mean has constant spread; with a common correlation its spread grows with n.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EXERCISE 2 ===== -->
+    <section class="mb-5">
+      <h2 class="h4">Exercise 2 &mdash; Conditional Probability, Bayes&rsquo; Theorem and Statistical Inference</h2>
+
+      <h3 class="h5">2.1 Conditional probability in probability theory and in statistics</h3>
+      <p>
+        <strong>In probability theory.</strong> For events A and B with P(B) &gt; 0, the conditional probability of A given B restricts the sample space to B and renormalises:
+      </p>
+      <div class="eq">
+        P(A | B) = P(A &cap; B) / P(B) &nbsp;&nbsp; &rArr; &nbsp;&nbsp; P(A &cap; B) = P(A | B) P(B) (multiplication rule)<br>
+        P(B) = &sum;<sub>i</sub> P(B | A<sub>i</sub>) P(A<sub>i</sub>) for a partition A<sub>1</sub>, A<sub>2</sub>, &hellip; (law of total probability)<br>
+        A and B independent &hArr; P(A | B) = P(A) &hArr; P(A &cap; B) = P(A) P(B)
+      </div>
+      <p>
+        For random variables the same idea gives conditional densities f(y | x) = f(x, y)/f<sub>X</sub>(x) and conditional expectations. The conditional probability P(A | B) is in general different from P(B | A); confusing the two is a common error that Bayes&rsquo; theorem corrects.
+        Conditional independence (A and B independent given C) is the assumption behind most statistical models.
+      </p>
+      <p>
+        <strong>In statistics.</strong> A parametric model is a family of conditional distributions p(x | &theta;): the data x are random given the parameter &theta;.
+        Read as a function of &theta; with the observed data fixed, the same expression is the <em>likelihood</em> L(&theta;; x) = p(x | &theta;); it is not a probability distribution over &theta;.
+        Conditional relative frequencies in a contingency table (as in HMWK 6) are the empirical counterpart of conditional probabilities.
+        Conditioning is also the language of prediction (the distribution of Y given X) and of testing (the distribution of a statistic given that the null hypothesis holds).
+      </p>
+
+      <h3 class="h5">2.2 Bayes&rsquo; theorem: prior, likelihood and posterior</h3>
+      <p>Writing the multiplication rule in two ways, P(A &cap; B) = P(A | B) P(B) = P(B | A) P(A), gives Bayes&rsquo; theorem. For a parameter &theta; and data x:</p>
+      <div class="eq">
+        P(A | B) = P(B | A) P(A) / P(B), &nbsp;&nbsp; P(B) = &sum;<sub>i</sub> P(B | A<sub>i</sub>) P(A<sub>i</sub>)<br>
+        &pi;(&theta; | x) = L(&theta;; x) &pi;(&theta;) / p(x), &nbsp;&nbsp; p(x) = &int; L(&theta;; x) &pi;(&theta;) d&theta; &nbsp;&nbsp; &rArr; &nbsp;&nbsp; &pi;(&theta; | x) &prop; L(&theta;; x) &pi;(&theta;)<br>
+        log &pi;(&theta; | x) = log &pi;(&theta;) + log L(&theta;; x) + constant
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-3 compact">
+          <thead><tr><th>Component</th><th>Symbol</th><th>Meaning</th><th>Question it answers</th></tr></thead>
+          <tbody>
+            <tr><td>Prior probability</td><td>&pi;(&theta;), P(A)</td><td>Plausibility of each value of the parameter (or hypothesis) before the data, from earlier studies, theory or a neutral convention.</td><td>What was believed before observing x?</td></tr>
+            <tr><td>Likelihood</td><td>L(&theta;; x) = p(x | &theta;), P(B | A)</td><td>Probability (density) of the observed data under each parameter value, as a function of &theta;.</td><td>How well does each &theta; explain x?</td></tr>
+            <tr><td>Evidence (marginal likelihood)</td><td>p(x), P(B)</td><td>Prior-weighted average of the likelihood; a normalising constant for the posterior.</td><td>How probable are the data overall?</td></tr>
+            <tr><td>Posterior probability</td><td>&pi;(&theta; | x), P(A | B)</td><td>Plausibility of each &theta; after the data: prior reweighted by the likelihood and renormalised.</td><td>What is believed after observing x?</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The theorem turns the probability of the data given the hypothesis, which a model provides, into the probability of the hypothesis given the data, which is what inference asks for.
+        Updating is sequential: if x<sub>1</sub> and x<sub>2</sub> are conditionally independent given &theta;, then &pi;(&theta; | x<sub>1</sub>, x<sub>2</sub>) &prop; p(x<sub>2</sub> | &theta;) &pi;(&theta; | x<sub>1</sub>),
+        so the posterior after the first batch is the prior for the second, and the result does not depend on how the data are split.
+        This is why the updating process is central to Bayesian inference: it combines every source of information coherently, returns a full distribution (credible intervals, probabilities of hypotheses, predictive distributions)
+        and works with any sample size, while the influence of the prior fades as the data accumulate.
+      </p>
+
+      <h3 class="h5">2.3 Example A: prior and likelihood in a detection problem</h3>
+      <p>
+        An intrusion detection system raises an alert (E). Let A be the event that an attack is in progress. The prior is P(A), the likelihood is given by the detection rate P(E | A) and the false-positive rate P(E | not A), and
+      </p>
+      <div class="eq">
+        P(A | E) = P(E | A) P(A) / [ P(E | A) P(A) + P(E | not A) (1 &minus; P(A)) ]
+      </div>
+      <p>
+        Further alerts are assumed conditionally independent given the state, so the posterior after one alert is the prior for the next. The calculation is exact and does not use random numbers; the card below also holds the inputs of Example B.
+      </p>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row g-3 align-items-end">
+            <div class="col-6 col-md-3">
+              <label for="priorInput" class="form-label">Prior P(attack)</label>
+              <input id="priorInput" type="number" class="form-control" value="0.01" step="0.001">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="tprInput" class="form-label">Detection rate P(alert | attack)</label>
+              <input id="tprInput" type="number" class="form-control" value="0.95" step="0.01">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="fprInput" class="form-label">False-positive rate P(alert | no attack)</label>
+              <input id="fprInput" type="number" class="form-control" value="0.02" step="0.01">
+            </div>
+          </div>
+          <div class="row g-3 align-items-end mt-1">
+            <div class="col-6 col-md-3">
+              <label for="bayesSeed" class="form-label">Seed (Example B)</label>
+              <input id="bayesSeed" type="number" class="form-control" value="2026" step="1">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="thetaInput" class="form-label">True &theta;<sub>0</sub> (Example B)</label>
+              <input id="thetaInput" type="number" class="form-control" value="0.3" step="0.05">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="obsInput" class="form-label">Observations n (Example B)</label>
+              <input id="obsInput" type="number" class="form-control" value="200" step="10">
+            </div>
+          </div>
+          <div class="row g-3 align-items-end mt-1">
+            <div class="col-auto"><button id="btnBayes" type="button" class="btn btn-primary">Run</button></div>
+            <div class="col-auto"><button id="btnBayesSeed" type="button" class="btn btn-outline-secondary">New random seed and run</button></div>
+            <div class="col-auto small text-muted" id="bayesStatus"></div>
+          </div>
+          <div id="bayesError" class="text-danger small mt-2 d-none"></div>
+        </div>
+      </div>
+      <div id="attackTable" class="mb-3"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvAttackPrior" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Influence of the prior.</strong> For a small prior, even a reliable alert leaves a low posterior; a second alert raises it sharply. The prior matters most where it is small.</p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvAttackFpr" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Influence of the likelihood.</strong> The posterior falls quickly as the false-positive rate grows, and the fall is steeper for small priors.</p>
+        </div>
+      </div>
+
+      <h3 class="h5">2.4 Example B: a continuous parameter (Beta&ndash;Binomial model)</h3>
+      <p>
+        Let &theta; be the unknown probability that a single attack attempt succeeds. In n simulated independent attempts k succeed, with true value &theta;<sub>0</sub> (inputs in the card of Section 2.3, which controls both examples).
+        With a Beta(a, b) prior and a Binomial likelihood the posterior is again a Beta law (conjugacy):
+      </p>
+      <div class="eq">
+        &pi;(&theta;) &prop; &theta;<sup>a&minus;1</sup> (1 &minus; &theta;)<sup>b&minus;1</sup>, &nbsp;&nbsp; L(&theta;; k) &prop; &theta;<sup>k</sup> (1 &minus; &theta;)<sup>n&minus;k</sup><br>
+        &pi;(&theta; | k) &prop; &theta;<sup>a+k&minus;1</sup> (1 &minus; &theta;)<sup>b+n&minus;k&minus;1</sup> &nbsp;&rArr;&nbsp; Beta(a + k, b + n &minus; k)<br>
+        posterior mean = (a + k)/(a + b + n) = [(a + b)/(a + b + n)]&middot;[a/(a + b)] + [n/(a + b + n)]&middot;(k/n)
+      </div>
+      <p>
+        The posterior mean is a weighted average of the prior mean and the maximum-likelihood estimate k/n; the prior acts like a + b extra observations.
+        Four priors are compared: uniform, Jeffreys, and two informative priors of weight 20 centred at 0.30 and at 0.70. For the default &theta;<sub>0</sub> = 0.3 the first informative prior agrees with the truth and the second does not.
+        The credible interval is the equal-tailed 95% interval of the posterior, computed from the exact Beta quantiles. The uniform-prior posterior is the likelihood normalised to integrate to 1.
+        The data are one simulated sample, so single numbers change with the seed; the qualitative pattern does not.
+      </p>
+      <h4 class="h6">Posteriors after the first 10 observations and after all n</h4>
+      <div id="betaTable" class="mb-3"></div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvBetaSmall" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Few data.</strong> The posteriors differ visibly: the informative priors pull the curve towards their own centre and narrow it, the uniform and Jeffreys curves follow the likelihood.</p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvBetaFull" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Many data.</strong> The curves nearly coincide and concentrate near the data; the prior still leaves a small shift when it is far from the truth.</p>
+        </div>
+      </div>
+      <div class="row g-3 mb-3">
+        <div class="col-lg-6">
+          <canvas id="cvBetaMean" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Sequential updating.</strong> All posterior means approach the maximum-likelihood estimate as n grows; the differences between priors are largest at small n.</p>
+        </div>
+        <div class="col-lg-6">
+          <canvas id="cvBetaWidth" width="560" height="390" class="chart"></canvas>
+          <p class="small text-muted mt-2 mb-0"><strong>Uncertainty.</strong> The width of the credible interval shrinks about as 1/&radic;n for every prior; the informative priors start narrower.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DISCUSSION ===== -->
+    <section class="mb-5">
+      <h2 class="h4">Discussion</h2>
+
+      <h3 class="h6 mt-3">What distinguishes the four modes of convergence?</h3>
+      <p>
+        They differ in what is required to be small. Almost sure convergence controls whole trajectories, convergence in probability controls the probability of a deviation at each fixed n,
+        mean-square convergence controls the average squared deviation, and convergence in distribution controls only the law. The strength ordering is a.s. &rArr; in probability &rArr; in distribution and L&sup2; &rArr; in probability, and none of the reverse
+        implications holds in general (Sections 1.1 and 1.3). In the simulation the single-n probability and the whole-tail probability both vanish, with the tail version always larger (Section 1.2);
+        the typewriter sequence shows that the gap between them can be permanent for a different sequence.
+      </p>
+
+      <h3 class="h6 mt-3">What is the role of each mode in the LLN and the CLT?</h3>
+      <p>
+        The LLN is a statement about convergence to a constant: in probability (weak form), almost surely (strong form) and, with finite variance, in mean square with the exact rate &sigma;&sup2;/n, which the simulated mean-square error follows.
+        The CLT describes the fluctuation around that constant and can only hold in distribution, because its limit is a law; the exact KS distance in Section 1.2 decreases steadily with n even though the simulated one is limited by Monte Carlo noise.
+        The same modes appear in consistency of estimators (probability or a.s.), Glivenko&ndash;Cantelli (a.s.), asymptotic normality of estimators (distribution) and, through Slutsky&rsquo;s theorem, in t-type and Wald-type inference (Section 1.4).
+      </p>
+
+      <h3 class="h6 mt-3">Why does &radic;n appear, and what is the role of independence?</h3>
+      <p>
+        Because the variance of a sum of uncorrelated variables is the sum of the variances, sd(S<sub>n</sub>) = &sigma;&radic;n; dividing by &radic;n is the only scaling that keeps a non-degenerate limit (Section 1.5, first table and chart).
+        Independence, or at least uncorrelatedness, is what makes the variance additive; with a common correlation &rho; the variance of the mean tends to &rho;&sigma;&sup2; instead of 0 and the scaling by &radic;n breaks down (second table and chart).
+        Weak dependence with summable covariances preserves the scale &radic;n with a different variance. In inference this gives the standard error &sigma;/&radic;n, so precision grows only with the square root of the sample size.
+      </p>
+
+      <h3 class="h6 mt-3">What are conditional probability and Bayes&rsquo; theorem, and how do prior, likelihood and posterior relate?</h3>
+      <p>
+        Conditional probability restricts attention to the cases where B holds; Bayes&rsquo; theorem reverses the conditioning, turning P(data | hypothesis) into P(hypothesis | data): posterior &prop; likelihood &times; prior.
+        The prior states what is known before the data, the likelihood states how well each hypothesis explains the data, and the posterior is the updated state of knowledge (Section 2.2).
+        In Example A, with the current inputs (prior <span id="dPrior"></span>, detection rate <span id="dTpr"></span>, false-positive rate <span id="dFpr"></span>), the posterior probability of an attack after one alert is <span id="dPost"></span>.
+        It is far from the detection rate because the prior is small: most alerts come from the much larger group of non-attacks. Ignoring the prior is the base-rate error.
+      </p>
+
+      <h3 class="h6 mt-3">Why is the updating process central to Bayesian inference, and what do the examples show about advantages and limitations?</h3>
+      <p>
+        <strong>Advantages.</strong> Updating combines prior information and data in one rule, can be repeated as new data arrive (second row of the Example A table: two alerts raise the posterior sharply),
+        yields direct probability statements about parameters through credible intervals, and works for small samples, where the informative priors in Example B give narrower intervals than the uniform prior.
+        When the data are numerous the posteriors for different priors become close and approach the maximum-likelihood estimate, so the conclusion is driven by the data.
+      </p>
+      <p>
+        <strong>Limitations.</strong> The conclusion depends on the prior when data are few: the misleading informative prior in Example B stays visibly away from the truth at n = 10 and keeps a smaller shift at the full sample size,
+        and the result for a detection problem changes strongly with the assumed prior and false-positive rate (both charts of Example A). The likelihood is also an assumption: the alerts were taken as conditionally independent given the state, and the Beta&ndash;Binomial model assumes independent attempts with constant success probability.
+        Priors therefore need to be justified and their influence checked by comparing several of them, as done here. The evidence integral can be costly to compute in models without conjugacy, where numerical methods are needed (not treated here).
+      </p>
+    </section>
+
+    <!-- ===== KEY TAKEAWAYS ===== -->
+    <section class="mb-5">
+      <h2 class="h4">Key takeaways</h2>
+      <div class="card">
+        <div class="card-body">
+          <ul class="mb-0">
+            <li><strong>Hierarchy of modes.</strong> Almost sure and mean-square convergence each imply convergence in probability, which implies convergence in distribution; no reverse implication holds in general.</li>
+            <li><strong>LLN and CLT.</strong> The LLN concerns convergence to a constant (probability, almost sure, mean square); the CLT concerns the law of the fluctuations and is a statement in distribution.</li>
+            <li><strong>Role of &radic;n.</strong> It comes from the additivity of variance for uncorrelated variables; with a common correlation the variance of the mean does not vanish.</li>
+            <li><strong>Bayes&rsquo; theorem.</strong> Posterior &prop; likelihood &times; prior; sequential updating treats the posterior as the next prior.</li>
+            <li><strong>Prior and likelihood.</strong> The prior dominates when data are few or the prior is extreme, as in the base-rate example; with many data the posteriors for different priors become close.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REFERENCES ===== -->
+    <section class="mb-5">
+      <h2 class="h4">References</h2>
+      <p class="small text-muted">
+        The two parts of the assignment and the list of modes of convergence come from the assignment. All tables, probabilities and charts on this page are computed by the code in your browser from simulated data.
+        The comparisons, the choice of examples and the discussion are the author&rsquo;s own analysis; the sources below support definitions and standard theorems. They are textbooks (secondary sources) that are freely available online.
+      </p>
+
+      <h3 class="h6 mt-3">Convergence of random variables, LLN and CLT</h3>
+      <ul class="small">
+        <li class="mb-2 text-break">R. Durrett, <em>Probability: Theory and Examples</em>, 5th edition, Cambridge University Press, 2019 (draft version free on the author&rsquo;s page). <a href="https://sites.math.duke.edu/~rtd/PTE/pte.html" target="_blank" rel="noopener">https://sites.math.duke.edu/~rtd/PTE/pte.html</a></li>
+        <li class="mb-2 text-break">J. K. Blitzstein and J. Hwang, <em>Introduction to Probability</em>, 2nd edition, CRC Press, 2019 (free online version linked on the course page of Harvard Statistics 110). <a href="https://stat110.hsites.harvard.edu/" target="_blank" rel="noopener">https://stat110.hsites.harvard.edu/</a></li>
+      </ul>
+
+      <h3 class="h6 mt-3">Conditional probability, Bayes&rsquo; theorem and Bayesian inference</h3>
+      <ul class="small">
+        <li class="mb-2 text-break">J. K. Blitzstein and J. Hwang, <em>Introduction to Probability</em>, 2nd edition, 2019, chapter on conditional probability (same source as above). <a href="https://stat110.hsites.harvard.edu/" target="_blank" rel="noopener">https://stat110.hsites.harvard.edu/</a></li>
+        <li class="mb-2 text-break">A. Gelman, J. B. Carlin, H. S. Stern, D. B. Dunson, A. Vehtari and D. B. Rubin, <em>Bayesian Data Analysis</em>, 3rd edition, CRC Press, 2013 (PDF free for non-commercial use). <a href="https://sites.stat.columbia.edu/gelman/book" target="_blank" rel="noopener">https://sites.stat.columbia.edu/gelman/book</a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="bg-light border-top py-3 mt-auto">
+    <div class="container text-center text-muted small">
+      &copy; <span id="anno"></span> Vincenzo &middot; Homework
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="script.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      if (typeof init !== "function") {
+        var box = document.createElement("div");
+        box.className = "alert alert-danger m-3";
+        box.textContent = "script.js did not load or contains an error. Open the browser console (F12) for details.";
+        document.body.prepend(box);
+      }
+    });
+  </script>
+</body>
+</html>
